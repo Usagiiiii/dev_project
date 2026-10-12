@@ -34,7 +34,7 @@ function validatePayload(body, { partial = false } = {}) {
   const errors = [];
   if (!partial || body.name !== undefined) {
     if (!body.name || !String(body.name).trim()) {
-      errors.push('名称不能为空');
+      errors.push('名称不能为空!');
     } else if (String(body.name).trim() === '有一些蔬菜' || String(body.name).trim() === '有蔬菜') {
       errors.push('请填写具体食材品种，不能使用模糊描述');
     }
