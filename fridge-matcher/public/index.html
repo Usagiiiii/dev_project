@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI冰箱食材寿命匹配器</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <p class="eyebrow">清库存优先 · 非AI业务闭环</p>
+      <h1>AI冰箱食材寿命匹配器</h1>
+    </div>
+    <div class="actions">
+      <button id="btn-seed" type="button">加载样例数据</button>
+      <button id="btn-clear" type="button" class="ghost">清空库存</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel" id="panel-inventory">
+      <h2>今天优先处理</h2>
+      <p class="hint">按剩余寿命排序；红色为需人工确认，不参与推荐。</p>
+      <ul id="priority-list" class="list"></ul>
+
+      <h3>新增食材</h3>
+      <form id="form-add" class="form">
+        <label>名称 <input name="name" required placeholder="如：青菜" /></label>
+        <label>数量 <input name="quantity" type="number" min="0.1" step="0.1" required value="1" /></label>
+        <label>单位 <input name="unit" required value="把" /></label>
+        <label>预计到期 <input name="expiry_date" type="date" /></label>
+        <label>备注 <input name="notes" placeholder="异味/发黏等会触发人工确认" /></label>
+        <button type="submit">保存食材</button>
+      </form>
+      <p id="inventory-msg" class="msg" aria-live="polite"></p>
+    </section>
+
+    <section class="panel" id="panel-pref">
+      <h2>今日条件</h2>
+      <form id="form-pref" class="form">
+        <label>口味
+          <select name="taste">
+            <option>清淡</option>
+            <option>家常</option>
+            <option>酸甜</option>
+          </select>
+        </label>
+        <label>人数 <input name="servings" type="number" min="1" max="12" value="1" /></label>
+        <label>最长分钟 <input name="max_minutes" type="number" min="5" max="180" value="20" /></label>
+        <label>过敏（逗号分隔） <input name="allergens" value="花生" /></label>
+        <label class="check"><input name="only_use_inventory" type="checkbox" /> 仅使用现有库存</label>
+        <label>最大补购数 <input name="max_purchases" type="number" min="0" max="10" value="2" /></label>
+        <button type="submit">保存偏好</button>
+      </form>
+      <button id="btn-generate" type="button" class="primary">生成今天方案（规则降级）</button>
+      <p id="pref-msg" class="msg" aria-live="polite"></p>
+    </section>
+
+    <section class="panel" id="panel-plans">
+      <h2>料理方案</h2>
+      <p class="hint">实验4实现规则模板方案；AI接入留到后续迭代。</p>
+      <div id="issues" class="issues"></div>
+      <div id="plans" class="plans"></div>
+      <p id="plan-msg" class="msg" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>
+    <span>本地 SQLite · 日志见 logs/app.log</span>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>
