@@ -5,6 +5,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { registerIngredientRoutes } from './routes/ingredients.js';
 import { registerPreferenceRoutes } from './routes/preferences.js';
 import { registerPlanRoutes } from './routes/plans.js';
+import { registerRagRoutes } from './routes/rag.js';
 import { seedFromFile } from '../scripts/seed.js';
 import { clearAllIngredients } from './services/inventoryService.js';
 
@@ -19,6 +20,7 @@ app.useError(errorHandler);
 registerIngredientRoutes(app);
 registerPreferenceRoutes(app);
 registerPlanRoutes(app);
+registerRagRoutes(app);
 
 app.get('/api/health', (_req, res) => {
   res.json({

@@ -8,7 +8,10 @@
     "start": "node src/server.js",
     "seed": "node scripts/seed.js",
     "reset-db": "node scripts/reset-db.js",
-    "test": "node --test tests/api.test.js"
+    "test": "node --test tests/api.test.js",
+    "test:rag": "node --test tests/rag.test.js",
+    "rag": "node scripts/rag-demo.js",
+    "rag-compare": "node scripts/rag-compare.js"
   },
   "engines": {
     "node": ">=22.5.0"
