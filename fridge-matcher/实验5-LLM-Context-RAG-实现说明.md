@@ -1,8 +1,8 @@
 # 实验5：LLM、Context 与 RAG 实现说明
 
 - 项目：AI冰箱食材寿命匹配器（fridge-matcher）
-- 范围：本次仅实现「原版」——LLM 接口占位（预计后续以调用 API 方式接入）、Prompt 原版 V1、知识库与切分、关键词检索、RAG 最小链路、对比测试框架
-- 运行环境：Node.js ≥ 22.5，零第三方依赖（复用实验4 工程骨架）
+- 范围：本次实现「原版」——LLM 接口（**已接入真实 API**：mock 占位 + `LLM_MODE=api` 时调用千问兼容接口，实测 qwen-plus）、Prompt 原版 V1、知识库与切分、关键词检索、RAG 最小链路、对比测试框架
+- 运行环境：Node.js ≥ 22.5，零第三方依赖（复用实验4 工程骨架；API 调用使用 Node 内置 fetch）
 
 ---
 
@@ -22,14 +22,16 @@
 
 ## 2. LLM 调用与输出格式（2.1）
 
-### 2.1 接口占位设计
+### 2.1 LLM 接口设计（mock 占位 + 真实 API 接入）
 
-按任务要求，**LLM 接口先空出来**，预计后续使用「调用 API」的方式接入云端模型。实现见 `src/services/modelClient.js`：
+按任务要求，LLM 以「调用 API」方式接入云端模型；开发阶段用 mock 占位跑通链路。实现见 `src/services/modelClient.js`：
 
 - 统一调用契约 `callLLM({ messages, temperature, maxTokens, timeoutMs, mock })`，对外屏蔽模型来源；
 - 模式由环境变量 `LLM_MODE` 控制（默认 `mock`）：
   - `mock`：占位实现，返回可配置的模拟结果，用于跑通 RAG 链路、输出校验与失败处理；
-  - `api`：真实 API 接入点骨架——未配置 `LLM_API_URL / LLM_API_KEY` 时明确报错 `LLM_NOT_CONFIGURED`；配置后接入点已就绪，真实 HTTP 请求留 TODO（调用方式：`fetch(apiUrl)` + Bearer Token + messages 数组，超时用 `AbortSignal.timeout`）。
+  - `api`：**已实现真实 HTTP 请求**——`fetch(apiUrl)` + Bearer Token + messages 数组，超时用 `AbortSignal.timeout`；未配置 `LLM_API_URL / LLM_API_KEY / LLM_MODEL` 时明确报错 `LLM_NOT_CONFIGURED`。
+- 配置读取：零依赖加载器按「进程环境变量 > 项目根目录 `.env`」优先级加载（`.env` 已被 `.gitignore` 忽略，模板见 `.env.example`）。
+- 实测模型：千问 OpenAI 兼容接口（`https://maas.qianwenaiapi.com/compatible-mode/v1/chat/completions`，URL 必须带 `/chat/completions` 路径），模型 `qwen-plus`，单次 RAG 问答约 2~9 秒；期间发现推理模型（qwen3.8-flash）对完整 RAG prompt 推理可达 40s~120s+，故默认超时设为 120s，并建议优先使用非推理模型。
 
 返回统一结构：`{ model, mode, text, usage }`，其中 `usage` 含 Token 估算（按 1 汉字 ≈ 1 token 的简化口径，标注为估算值）。
 
@@ -59,9 +61,11 @@
 | 服务不可用 | `mock: { mode: 'error' }` | `LLM_SERVICE_UNAVAILABLE` |
 | 超时 | `mock: { mode: 'timeout' }` | `LLM_TIMEOUT` |
 | API 未配置 | `LLM_MODE=api` 且无密钥 | `LLM_NOT_CONFIGURED` |
-| API 接入点未实现 | `LLM_MODE=api` 且已配置 | `LLM_API_PENDING`（明确提示占位） |
+| API HTTP 错误 | 接口返回非 2xx | `LLM_HTTP_ERROR` |
+| 网络错误 | 连接失败/中断 | `LLM_NETWORK_ERROR` |
+| 响应格式错误 | 非 JSON / 缺字段 | `LLM_BAD_RESPONSE` |
 
-失败时 RAG 服务返回降级结果 `{ ok:false, fallback:'model_unavailable', issues:[...] }`，不崩溃、不返回伪造回答。对应测试：`LLM-02/03/04`、`RAG-03`。
+失败时 RAG 服务返回降级结果 `{ ok:false, fallback:'model_unavailable', issues:[...] }`，不崩溃、不返回伪造回答。对应测试：`LLM-02/03/04`、`RAG-03`。真实 API 调用还记录 `usage`（模型返回的 prompt_tokens / completion_tokens）。
 
 ---
 
@@ -179,7 +183,7 @@
 
 ```
 问题输入 → 检索（BM25 Top-k）→ 上下文组织（库存+偏好+检索片段）
-        → 模型调用（LLM 接口占位）→ 输出校验（白名单/过敏/引用/格式）→ 回答返回
+        → 模型调用（LLM_MODE=api 时真实调用千问 qwen-plus）→ 输出校验（白名单/过敏/引用/格式）→ 回答返回
 ```
 
 实现见 `src/services/ragService.js` 的 `ask()`。输出校验见 `src/services/ragGuard.js`：
@@ -188,7 +192,7 @@
 - **引用校验**：`references` 必须是知识库真实编号（`INVALID_REFERENCE`）；
 - **格式校验**：必须为可解析 JSON 且含 `title/steps/used_items`（`INVALID_JSON / INVALID_FORMAT`）。
 
-链路一次运行实测（CLI，mock 模式）：检索 7ms 内完成，回答带 `references: [KB-07, KB-11, KB-06]`，全部通过校验。
+链路一次运行实测（CLI，真实 API / qwen-plus）：检索 7ms 内完成，模型调用约 2~9 秒，回答带 `references: ["KB-07"]`，全部通过校验（见 6.2 真实结果）。
 
 ---
 
@@ -196,27 +200,30 @@
 
 固定问题集共 **7 个**（定义于 `scripts/rag-compare.js`），覆盖：单片段可答（Q1-Q3）、安全类（Q4）、多片段综合（Q5）、资料无答案（Q6）、超出范围（Q7）。
 
-两组使用相同问题、相同模型（均为 mock 占位）、相同主要参数（temperature=0.3, maxTokens=800）与相同输出格式；差异仅在于 **RAG 组注入检索资料并要求引用来源，直接组不提供资料**。每次测试独立上下文。
+两组使用相同问题、相同模型（`LLM_MODE=api` 时为真实模型 qwen-plus，否则 mock）、相同主要参数（temperature=0.3, maxTokens=800）与相同输出格式；差异仅在于 **RAG 组注入检索资料并要求引用来源，直接组不提供资料**。每次测试独立上下文。
 
-### 6.1 测试结果（模型为 mock 占位，结果确定可复现）
+### 6.1 测试结果（真实 API：千问 qwen-plus，14 次调用全部成功）
 
 | 编号 | 类型 | 直接组回答 | 直接组引用 | RAG组回答 | RAG组引用 | 检索片段 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Q1 | 单片段可答 | 库存食材家常方案 | — | 青菜蛋花汤的做法 | KB-06,KB-01,KB-11 | KB-06,KB-01,KB-11 |
-| Q2 | 单片段可答 | 库存食材家常方案 | — | 番茄炒蛋的做法 | KB-07,KB-11,KB-06 | KB-07,KB-11,KB-06 |
-| Q3 | 单片段可答 | 库存食材家常方案 | — | 家常豆腐的做法 | KB-08,KB-04,KB-11 | KB-08,KB-04,KB-11 |
-| Q4 | 安全类 | 库存食材家常方案 | — | 变质食材的判断与安全 | KB-09,KB-10,KB-04 | KB-09,KB-10,KB-04 |
-| Q5 | 多片段综合 | 库存食材家常方案 | — | 临期食材优先原则 | KB-10,KB-09,KB-12 | KB-10,KB-09,KB-12 |
-| Q6 | 资料无答案 | 库存食材家常方案 | — | INSUFFICIENT_DOCS（资料不足） | — | 空 |
-| Q7 | 超出范围 | 库存食材家常方案 | — | INSUFFICIENT_DOCS（资料不足） | — | 空 |
+| Q1 | 单片段可答 | 青菜豆腐蛋花汤 | KB-06（无资料支撑） | 青菜蛋花汤 | KB-06 | KB-06,KB-01,KB-11 |
+| Q2 | 单片段可答 | 番茄炒蛋 | KB-01（幻觉引用） | 番茄炒蛋 | KB-07 | KB-07,KB-11,KB-06 |
+| Q3 | 单片段可答 | 番茄豆腐蒸蛋 | — | 姜香煎豆腐配青菜 | KB-08,KB-04,KB-11 | KB-08,KB-04,KB-11 |
+| Q4 | 安全类 | 拒绝（CODE：超出任务范围） | — | 异味/发黏属变质，不应食用 | —（内容引 KB-09） | KB-09,KB-10,KB-04 |
+| Q5 | 多片段综合 | 拒绝（CODE：开放式问题） | — | 拒绝（引用 KB-10/09/12 说明无菜谱） | — | KB-10,KB-09,KB-12 |
+| Q6 | 资料无答案 | 拒绝（CODE：天气未提供） | — | 拒绝（天气未提供） | — | 空 |
+| Q7 | 超出范围 | 拒绝（INSUFFICIENT_STOCK） | — | 拒绝（INSUFFICIENT_STOCK） | — | 空 |
 
-（结构化结果保存于 `data/rag-compare-result.json`，含耗时与人工判断待填列。）
+（结构化结果保存于 `data/rag-compare-result.json`，含每问耗时与已填写的人工判断列。）
 
-### 6.2 初步分析与局限（限于 mock 占位样例）
+### 6.2 真实模型对比分析（qwen-plus）
 
-- 正确性：RAG 组的方案标题与检索片段一致，引用全部对应真实片段（引用可靠性良好）；
-- 无依据内容：直接组无资料要求，回答为通用方案；RAG 组资料不足时明确提示，未编造；
-- **局限**：mock 生成器仅取 Top-1 片段标题与库存简单拼装，不代表真实模型的综合能力；真实对比需接入 API 后重跑（见第 9 节）。
+- **RAG 组引用可靠**：Q1/Q2/Q3 均引用真实检索片段（KB-06/07/08），与期望一致；Q4 安全类能依据 KB-09 给出"异味发黏不可食用"的正确判断——**没有资料时（直接组）模型直接拒绝，有了资料才能回答**，正是 RAG 注入的价值；
+- **直接组出现幻觉引用**：Q1 引 KB-06、Q2 引 KB-01——直接组 Prompt 不含任何知识库资料，模型输出的编号全部来自 system 示例的照抄，属于**无资料支撑的编造引用**；RAG 组的真实资料注入有效抑制了该现象；
+- **拒绝类问题（Q5/Q6/Q7）两组均不编造**，正确返回资料不足/库存不足提示；Q5 模型对开放式问题过于严格（拒绝给出原则性建议），是 V1 的已知局限；
+- **性能**：14 次调用全部成功，单问 0.8~8s，无超时无崩溃；失败处理与 JSON 容错（自然语言包裹中提取 JSON）在真实模型下验证有效；
+- 暴露的 Prompt V1 问题（修改版 V2 方向）：① 错误模板占位符 `"error":"CODE"` 被模型照抄为字面值；② 开放式问题应允许输出基于资料的原则性建议；③ 直接组无资料时模型仍会编造引用编号。
+- mock 模式的确定性结果仍记录于提交历史（commit 043113d），真实结果已覆盖 `data/rag-compare-result.json`（`mode: "api:qwen-plus"`）。
 
 ---
 
@@ -229,7 +236,7 @@
 | `data/knowledge_base.json` | 知识库（12 条） | 无 |
 | `src/services/knowledgeBase.js` | 加载、切分、抽查、统计 | 无 |
 | `src/services/retrieval.js` | 2-gram + BM25 关键词检索 | knowledgeBase |
-| `src/services/modelClient.js` | LLM 接口占位（mock/api 骨架） | 无 |
+| `src/services/modelClient.js` | LLM 接口（mock 占位 + 真实 API fetch 调用） | 无 |
 | `src/services/promptTemplates.js` | Prompt 原版 V1、上下文组装 | modelClient |
 | `src/services/ragGuard.js` | 输出校验（白名单/过敏/引用/格式） | knowledgeBase |
 | `src/services/ragService.js` | RAG 最小链路 `ask()` | 上述全部 + inventory/preference |
@@ -277,8 +284,9 @@ HTTP 接口：
 
 | 局限 | 说明 | 下一步计划 |
 | --- | --- | --- |
-| LLM 未接入 | 当前为 mock 占位，回答由确定性规则拼装 | 在 `modelClient.js` 的 API 接入点实现 `fetch` 调用（豆包等兼容 OpenAI 协议的 API） |
-| 检索仅关键词 | 2-gram + BM25 无法处理同义/语义相似 | 接入 embedding 向量检索（与 LLM API 同批接入），关键词 + 向量混合排序 |
-| Prompt 仅原版 | V1 未包含对"资料不足"等场景的显式指令示例 | 按 3.4 节方向实现修改版 V2 并记录对比结果 |
+| ~~LLM 未接入~~ | **已完成**：真实 API（千问 qwen-plus）实测通过 | 可在 .env 切换模型 / 增加流式输出 |
+| 推理模型过慢 | 曾用 qwen3.8-flash（推理模型）完整 RAG prompt 达 40s~120s+ | 优先使用非推理模型（qwen-plus 实测 2~9s） |
+| 检索仅关键词 | 2-gram + BM25 无法处理同义/语义相似 | 接入 embedding 向量检索，关键词 + 向量混合排序 |
+| Prompt 仅原版 | V1 未包含对"资料不足"等场景的显式指令示例；`"error":"CODE"` 占位会被模型照抄 | 按 3.4 节方向实现修改版 V2 并记录对比结果 |
 | 知识库规模小 | 12 条仅覆盖核心食材 | 扩充至 30-50 条并加入更新机制 |
-| 对比测试为 mock | 结果不代表真实模型 | 接入 API 后重跑 7 问对比，填写人工判断列 |
+| ~~对比测试为 mock~~ | **已完成**：qwen-plus 真实重跑 7 问×2 组，人工判断列已填 | 换模型后可按需重跑 |

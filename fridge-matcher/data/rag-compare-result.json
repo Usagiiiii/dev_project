@@ -1,136 +1,148 @@
 {
-  "generated_at": "2026-10-19T10:07:45.606Z",
-  "mode": "mock",
+  "generated_at": "2026-10-20T01:16:04.914Z",
+  "mode": "api:qwen-plus",
   "rows": [
     {
       "id": "Q1",
       "question": "冰箱里只有青菜和鸡蛋，能做什么菜？",
       "type": "单片段可答",
       "expect": "青菜蛋花汤类方案，引用 KB-06",
-      "direct_answer": "库存食材家常方案（模拟回答）",
-      "direct_refs": "—",
-      "direct_ms": 5,
+      "direct_answer": "青菜豆腐蛋花汤",
+      "direct_refs": "KB-06",
+      "direct_ms": 7836,
       "direct_issues": [],
-      "rag_answer": "青菜蛋花汤的做法（模拟回答）",
-      "rag_refs": "KB-06,KB-01,KB-11",
+      "rag_answer": "青菜蛋花汤",
+      "rag_refs": "KB-06",
       "rag_chunks": "KB-06,KB-01,KB-11",
-      "rag_ms": 5,
+      "rag_ms": 6529,
       "rag_issues": [],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "judge_direct_correctness": "基本正确（菜名合理，引用无资料支撑）",
+      "judge_rag_correctness": "正确（引 KB-06）",
+      "judge_rag_ref_reliable": "可靠"
     },
     {
       "id": "Q2",
       "question": "番茄和鸡蛋能做什么家常菜？",
       "type": "单片段可答",
       "expect": "番茄炒蛋类方案，引用 KB-07",
-      "direct_answer": "库存食材家常方案（模拟回答）",
-      "direct_refs": "—",
-      "direct_ms": 2,
+      "direct_answer": "番茄炒蛋",
+      "direct_refs": "KB-01",
+      "direct_ms": 7656,
       "direct_issues": [],
-      "rag_answer": "番茄炒蛋的做法（模拟回答）",
-      "rag_refs": "KB-07,KB-11,KB-06",
+      "rag_answer": "番茄炒蛋",
+      "rag_refs": "KB-07",
       "rag_chunks": "KB-07,KB-11,KB-06",
-      "rag_ms": 2,
+      "rag_ms": 7909,
       "rag_issues": [],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "judge_direct_correctness": "菜名正确，但引用为幻觉（直接组无资料，编号来自 system 示例）",
+      "judge_rag_correctness": "正确（引 KB-07）",
+      "judge_rag_ref_reliable": "可靠"
     },
     {
       "id": "Q3",
       "question": "豆腐怎么做好吃？",
       "type": "单片段可答",
       "expect": "家常豆腐类方案，引用 KB-08",
-      "direct_answer": "库存食材家常方案（模拟回答）",
+      "direct_answer": "番茄豆腐蒸蛋",
       "direct_refs": "—",
-      "direct_ms": 1,
+      "direct_ms": 8045,
       "direct_issues": [],
-      "rag_answer": "家常豆腐的做法（模拟回答）",
+      "rag_answer": "姜香煎豆腐配青菜",
       "rag_refs": "KB-08,KB-04,KB-11",
       "rag_chunks": "KB-08,KB-04,KB-11",
-      "rag_ms": 2,
+      "rag_ms": 7948,
       "rag_issues": [],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "judge_direct_correctness": "基本正确（无引用）",
+      "judge_rag_correctness": "正确（引 KB-08）",
+      "judge_rag_ref_reliable": "可靠"
     },
     {
       "id": "Q4",
       "question": "食材有异味、发黏，还能吃吗？",
       "type": "安全类",
       "expect": "提示不可食用，引用 KB-09",
-      "direct_answer": "库存食材家常方案（模拟回答）",
+      "direct_answer": "CODE: 问题超出任务范围：用户询问的是食材安全性判断（异味、发黏是否可食），属于食品安全常识咨询，非基于库存生成料理方案的任务。本助手仅提供匹配冰箱库存的可执行料理方案，不提供食品变质鉴定或健康风险评估服务。",
       "direct_refs": "—",
-      "direct_ms": 1,
-      "direct_issues": [],
-      "rag_answer": "变质食材的判断与安全（模拟回答）",
-      "rag_refs": "KB-09,KB-10,KB-04",
+      "direct_ms": 1775,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "rag_answer": "KB-09: 食材出现异味、发黏属于明确变质特征，依据KB-09和KB-04，该食材不应食用，也不可用于做菜；问题不涉及具体库存组合或方案生成，而是食品安全判断，故不生成料理方案。",
+      "rag_refs": "—",
       "rag_chunks": "KB-09,KB-10,KB-04",
-      "rag_ms": 2,
-      "rag_issues": [],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "rag_ms": 1769,
+      "rag_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "judge_direct_correctness": "拒绝但合理（无资料无法判断）",
+      "judge_rag_correctness": "正确（依据 KB-09 判断不可食用）",
+      "judge_rag_ref_reliable": "可靠（内容引用，未输出 references 数组）"
     },
     {
       "id": "Q5",
       "question": "怎样减少冰箱里的食材浪费？",
       "type": "多片段综合",
       "expect": "临期优先+搭配原则，引用 KB-10/11",
-      "direct_answer": "库存食材家常方案（模拟回答）",
+      "direct_answer": "CODE: 问题为开放式建议类提问，非具体料理方案生成任务；本系统仅响应‘用现有库存做什么菜’类指令",
       "direct_refs": "—",
-      "direct_ms": 1,
-      "direct_issues": [],
-      "rag_answer": "临期食材优先原则（模拟回答）",
-      "rag_refs": "KB-10,KB-09,KB-12",
+      "direct_ms": 1836,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "rag_answer": "CODE: 用户问题为通用方法论咨询（‘怎样减少冰箱里的食材浪费？’），未要求生成具体料理方案；而本系统仅响应‘基于库存生成1–3套可执行料理方案’的任务。知识库资料[KB-10][KB-09][KB-12]均属原则性指导，无法直接导出唯一可执行菜谱，且用户未提供‘要做什么菜’或‘想吃哪类食物’等目标指令。因此不符合方案生成触发条件。",
+      "rag_refs": "—",
       "rag_chunks": "KB-10,KB-09,KB-12",
-      "rag_ms": 2,
-      "rag_issues": [],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "rag_ms": 2907,
+      "rag_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "judge_direct_correctness": "拒绝但可接受（无资料）",
+      "judge_rag_correctness": "拒绝但合理（引用检索编号说明原因）",
+      "judge_rag_ref_reliable": "可靠（引用检索编号）"
     },
     {
       "id": "Q6",
       "question": "明天天气怎么样，适合吃什么？",
       "type": "资料无答案",
       "expect": "资料不足提示，不编造",
-      "direct_answer": "库存食材家常方案（模拟回答）",
+      "direct_answer": "CODE: 天气信息未提供，且问题超出食材匹配与料理方案生成的任务范围",
       "direct_refs": "—",
-      "direct_ms": 1,
-      "direct_issues": [],
-      "rag_answer": "(无标题)",
+      "direct_ms": 782,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "rag_answer": "CODE: 天气信息未提供，且问题超出食材匹配与料理生成任务范围",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 2,
+      "rag_ms": 805,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "judge_direct_correctness": "拒绝正确（不编造天气）",
+      "judge_rag_correctness": "拒绝正确（无检索片段）",
+      "judge_rag_ref_reliable": "N/A（无片段）"
     },
     {
       "id": "Q7",
       "question": "教我做佛跳墙的做法",
       "type": "超出范围",
       "expect": "资料不足提示，不编造",
-      "direct_answer": "库存食材家常方案（模拟回答）",
+      "direct_answer": "INSUFFICIENT_STOCK: 佛跳墙传统需海参、鲍鱼、花胶、瑶柱、蹄筋等高档干货及高汤，当前库存中无任何佛跳墙核心食材（如海味、肉类、高汤基底），且补购上限仅2项，无法满足基础配方需求；知识库资料中亦未提供简化版佛跳墙替代方案（KB-01至KB-06均聚焦常规家常菜与保鲜原理，无佛跳墙相关内容）",
       "direct_refs": "—",
-      "direct_ms": 0,
-      "direct_issues": [],
-      "rag_answer": "(无标题)",
+      "direct_ms": 3013,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
+      "rag_answer": "INSUFFICIENT_STOCK: 佛跳墙传统需海参、鲍鱼、花胶、瑶柱、蹄筋等高价值干货或海鲜，当前库存中无任何佛跳墙核心食材；青菜、豆腐、番茄、鸡蛋、生姜无法替代其主体风味与质地，知识库资料亦未提供简化版佛跳墙用料替换方案。",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 2,
+      "rag_ms": 2101,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "",
-      "judge_rag_correctness": "",
-      "judge_rag_ref_reliable": ""
+      "judge_direct_correctness": "拒绝正确（库存不足，不编造）",
+      "judge_rag_correctness": "拒绝正确（无片段）",
+      "judge_rag_ref_reliable": "N/A（无片段）"
     }
   ]
 }
