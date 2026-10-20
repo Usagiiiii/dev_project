@@ -9,7 +9,29 @@
  *   2) api ：真实 API 接入点骨架，未配置 LLM_API_URL / LLM_API_KEY 时明确报错，
  *      配置后仍在 TODO 处接入 HTTP 调用（本次不实现真实请求）。
  * - 失败模拟：mock 支持模拟「超时」与「接口不可用」，供实验5 2.1 失败测试使用。
+ *
+ * 配置来源（按优先级）：进程环境变量 > 项目根目录 .env 文件。
+ * 安全：.env 已被 .gitignore 忽略，API Key 不会进入版本库。
  */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ENV_FILE = path.resolve(__dirname, '../../.env');
+
+/** 轻量 .env 加载器（零依赖）：仅注入进程环境变量中不存在的键，不覆盖已有值 */
+function loadEnvFile() {
+  if (!fs.existsSync(ENV_FILE)) return;
+  const lines = fs.readFileSync(ENV_FILE, 'utf8').split(/\r?\n/);
+  for (const line of lines) {
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+    if (m && process.env[m[1]] === undefined) {
+      process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  }
+}
+loadEnvFile();
 
 export const LLM_MODES = { MOCK: 'mock', API: 'api' };
 
