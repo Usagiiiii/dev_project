@@ -1,14 +1,14 @@
 /**
- * LLM 调用模块（实验5 2.1）—— 接口占位版
+ * LLM 调用模块（实验5 2.1）
  *
  * 设计说明：
- * - 本次实验「LLM 接口先空出来」，预计后续采用「调用 API」的方式接入云端模型。
  * - 本模块定义统一调用契约 callLLM()，对外屏蔽模型来源；
- * - 当前提供两种模式（环境变量 LLM_MODE 控制，默认 mock）：
+ * - 两种模式（环境变量 LLM_MODE 控制，默认 mock）：
  *   1) mock：占位实现，返回可配置的模拟结果，用于跑通 RAG 链路、输出校验与失败处理；
- *   2) api ：真实 API 接入点骨架，未配置 LLM_API_URL / LLM_API_KEY 时明确报错，
- *      配置后仍在 TODO 处接入 HTTP 调用（本次不实现真实请求）。
- * - 失败模拟：mock 支持模拟「超时」与「接口不可用」，供实验5 2.1 失败测试使用。
+ *   2) api ：真实调用，兼容 OpenAI 协议 chat/completions（豆包、千问等通用），
+ *      配置项 LLM_API_URL / LLM_API_KEY / LLM_MODEL 见 .env.example。
+ * - 失败处理：HTTP 非 2xx → LLM_HTTP_ERROR；超时 → LLM_TIMEOUT；
+ *   网络失败 → LLM_NETWORK_ERROR；JSON/字段缺失 → LLM_BAD_RESPONSE。
  *
  * 配置来源（按优先级）：进程环境变量 > 项目根目录 .env 文件。
  * 安全：.env 已被 .gitignore 忽略，API Key 不会进入版本库。
@@ -39,7 +39,7 @@ export class LLMError extends Error {
   constructor(code, message, meta = {}) {
     super(message);
     this.name = 'LLMError';
-    this.code = code; // LLM_NOT_CONFIGURED | LLM_TIMEOUT | LLM_SERVICE_UNAVAILABLE | LLM_API_PENDING
+    this.code = code; // LLM_NOT_CONFIGURED | LLM_TIMEOUT | LLM_NETWORK_ERROR | LLM_HTTP_ERROR | LLM_BAD_RESPONSE | LLM_SERVICE_UNAVAILABLE
     this.meta = meta;
   }
 }
@@ -68,7 +68,7 @@ export function estimateTokens(text) {
  *   - timeoutMs: 模拟超时时延（毫秒，默认 3000）
  * @returns {Promise<{model:string, mode:string, text:string, usage:object}>}
  */
-export async function callLLM({ messages, temperature = 0.3, maxTokens = 800, timeoutMs = 30000, mock = {} }) {
+export async function callLLM({ messages, temperature = 0.3, maxTokens = 800, timeoutMs = 120000, mock = {} }) {
   const mode = getLLMMode();
 
   if (mode === LLM_MODES.API) {
@@ -77,22 +77,73 @@ export async function callLLM({ messages, temperature = 0.3, maxTokens = 800, ti
   return callMockLLM({ messages, temperature, maxTokens, mock });
 }
 
-/** API 接入点骨架：本次仅校验配置并明确提示未接入（接口占位） */
-async function callApiLLM({ messages, timeoutMs }) {
+/** 真实 API 调用：兼容 OpenAI 协议 chat/completions（豆包、千问等通用） */
+async function callApiLLM({ messages, temperature, maxTokens, timeoutMs }) {
   const apiUrl = process.env.LLM_API_URL;
   const apiKey = process.env.LLM_API_KEY;
-  if (!apiUrl || !apiKey) {
-    throw new LLMError('LLM_NOT_CONFIGURED', '未配置 LLM_API_URL / LLM_API_KEY，无法调用云端模型');
+  const model = process.env.LLM_MODEL;
+  if (!apiUrl || !apiKey || !model) {
+    throw new LLMError(
+      'LLM_NOT_CONFIGURED',
+      '未配置 LLM_API_URL / LLM_API_KEY / LLM_MODEL（可写入项目根目录 .env，参考 .env.example）'
+    );
   }
-  // TODO(实验5后续迭代)：在此实现真实 HTTP 调用，例如：
-  //   const res = await fetch(apiUrl, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-  //     body: JSON.stringify({ model: process.env.LLM_MODEL || 'doubao-pro-32k', messages, temperature, max_tokens: maxTokens }),
-  //     signal: AbortSignal.timeout(timeoutMs),
-  //   });
-  // 需要处理：HTTP 非 2xx → LLM_HTTP_ERROR；超时 → LLM_TIMEOUT；JSON 解析失败 → LLM_BAD_RESPONSE。
-  throw new LLMError('LLM_API_PENDING', 'API 接入点已就绪但真实调用尚未实现（接口占位，预计后续以调用 API 方式接入）');
+
+  let res;
+  try {
+    res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature,
+        max_tokens: maxTokens,
+      }),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  } catch (err) {
+    if (/timeout/i.test(err.name) || /timeout/i.test(String(err.message))) {
+      throw new LLMError('LLM_TIMEOUT', `模型调用超时（超过 ${timeoutMs}ms 无响应）`);
+    }
+    throw new LLMError('LLM_NETWORK_ERROR', `网络请求失败：${err.message}`);
+  }
+
+  if (!res.ok) {
+    let detail = '';
+    try {
+      detail = (await res.text()).slice(0, 300);
+    } catch {
+      // 忽略响应体读取失败
+    }
+    throw new LLMError('LLM_HTTP_ERROR', `模型接口返回 HTTP ${res.status}：${detail}`);
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new LLMError('LLM_BAD_RESPONSE', '模型返回内容不是合法 JSON');
+  }
+  const text = data?.choices?.[0]?.message?.content;
+  if (typeof text !== 'string') {
+    throw new LLMError('LLM_BAD_RESPONSE', '模型返回缺少 choices[0].message.content 字段');
+  }
+
+  return {
+    model: data.model || model,
+    mode: 'api',
+    text,
+    usage: {
+      prompt_tokens: data.usage?.prompt_tokens ?? null,
+      completion_tokens: data.usage?.completion_tokens ?? null,
+      total_tokens: data.usage?.total_tokens ?? null,
+      note: '来自模型接口 usage 字段',
+    },
+  };
 }
 
 /** Mock 占位实现：模拟成功 / 超时 / 接口不可用 */

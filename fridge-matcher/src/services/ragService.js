@@ -56,7 +56,7 @@ export async function ask(question, options = {}) {
       messages,
       temperature: 0.3,
       maxTokens: 800,
-      timeoutMs: 30000,
+      timeoutMs: 120000,
       mock: {
         ...mock,
         ctx: { inventory, preferences, chunks, useRag },
@@ -76,7 +76,7 @@ export async function ask(question, options = {}) {
       elapsed_ms: Date.now() - startedAt,
       context_chars,
       prompt_tokens_estimate,
-      chunks,
+      chunks: useRag ? chunks.map((r) => ({ id: r.chunk.id, title: r.chunk.title, score: r.score, matched: r.matched })) : [],
     };
   }
 

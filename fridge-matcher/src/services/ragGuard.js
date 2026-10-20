@@ -14,8 +14,21 @@ import { loadKnowledgeBase } from './knowledgeBase.js';
 export function parseLLMOutput(text) {
   if (typeof text !== 'string') return null;
   const trimmed = text.trim();
-  // 容错：模型可能输出 ```json ... ``` 包裹
-  const cleaned = trimmed.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
+  if (!trimmed) return null;
+
+  // 容错 1：模型可能输出 ```json ... ``` 包裹
+  let cleaned = trimmed.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+
+  // 容错 2：真实模型常把 JSON 包裹在自然语言里（如 "答案是：{...}"），
+  // 提取第一个 '{' 到最后一个 '}' 之间的子串再尝试解析
+  if (!cleaned.startsWith('{')) {
+    const start = cleaned.indexOf('{');
+    const end = cleaned.lastIndexOf('}');
+    if (start >= 0 && end > start) {
+      cleaned = cleaned.slice(start, end + 1);
+    }
+  }
+
   try {
     return JSON.parse(cleaned);
   } catch {

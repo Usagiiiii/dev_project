@@ -208,6 +208,14 @@ test('GUARD-04 非法 JSON 输出被识别', () => {
   assert.ok(guard.issues.some((i) => i.code === 'INVALID_JSON'));
 });
 
+test('GUARD-05 自然语言包裹的 JSON 也能解析（真实模型容错）', () => {
+  const parsed = parseLLMOutput(
+    '好的，根据资料为你生成方案：{"title":"番茄炒蛋","steps":["a"],"used_items":[{"name":"番茄","quantity":1,"unit":"个"}]} 希望有帮助！'
+  );
+  assert.ok(parsed, '应能从自然语言中提取 JSON');
+  assert.equal(parsed.title, '番茄炒蛋');
+});
+
 test('RAG-04 空库存时提示信息不足，不编造方案', async () => {
   clearAllIngredients();
   const r = await ask('有什么能做的菜？', { useRag: true });
