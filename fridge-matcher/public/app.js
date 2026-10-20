@@ -186,6 +186,92 @@ $('#form-pref').addEventListener('submit', async (e) => {
   }
 });
 
+/** 渲染一次 RAG / 直接模型问答结果（实验5：来源、检索片段、回答或错误） */
+function renderRagAnswer(r) {
+  const el = $('#rag-result');
+  el.innerHTML = '';
+  const meta = `来源：${r.source} · 模型：${r.model}（${r.mode}）· Prompt ${r.prompt?.version || '?'} · 耗时 ${r.elapsed_ms}ms`;
+
+  if (!r.ok) {
+    el.innerHTML = `<div class="card rag-error">
+      <div class="meta">${meta}</div>
+      <p><strong>模型不可用（${r.error?.code}）</strong>：${r.error?.message}</p>
+      <p class="hint">已按失败处理降级返回，可检查 .env 中 LLM_API_URL / LLM_API_KEY / LLM_MODEL 配置。</p>
+    </div>`;
+    return;
+  }
+
+  if (r.chunks?.length) {
+    const chips = r.chunks.map((c) => `<span class="chip">${c.id} · ${c.title}（${c.score.toFixed(2)}）</span>`).join('');
+    el.insertAdjacentHTML('beforeend', `<div class="rag-chunks">检索片段：${chips}</div>`);
+  } else if (r.source === 'rag') {
+    el.insertAdjacentHTML('beforeend', '<div class="rag-chunks">检索片段：无（资料不足，模型将按规则提示）</div>');
+  }
+
+  if (r.answer?.error) {
+    el.insertAdjacentHTML('beforeend', `<div class="card rag-error">
+      <div class="meta">${meta}</div>
+      <p><strong>${r.answer.error}</strong>：${r.answer.message}</p>
+      ${r.guard_issues?.length ? `<p class="hint">校验提示：${r.guard_issues.map((i) => `[${i.code}] ${i.message}`).join('；')}</p>` : ''}
+    </div>`);
+    return;
+  }
+
+  const a = r.answer;
+  const refs = a.references?.length
+    ? a.references.map((x) => `<span class="chip ref">${x}</span>`).join('')
+    : '<span class="hint">无引用</span>';
+  const purchases = (a.required_purchases?.length || a.optional_purchases?.length)
+    ? `<strong>补购</strong><ul>
+        ${(a.required_purchases || []).map((p) => `<li>${p.name} ${p.quantity}${p.unit}（必需）</li>`).join('')}
+        ${(a.optional_purchases || []).map((p) => `<li>${p.name} ${p.quantity}${p.unit}（可选）</li>`).join('')}
+      </ul>`
+    : '';
+  el.insertAdjacentHTML('beforeend', `<article class="card rag-answer">
+    <div class="meta">${meta}</div>
+    <h3>${a.title || '(未命名方案)'}</h3>
+    <p class="meta">${a.reason || ''}</p>
+    <p class="meta">约 ${a.cooking_minutes ?? '?'} 分钟</p>
+    <strong>消耗库存</strong>
+    <ul>${(a.used_items || []).map((u) => `<li>${u.name} ${u.quantity}${u.unit}</li>`).join('')}</ul>
+    ${purchases}
+    <strong>步骤</strong>
+    <ol>${(a.steps || []).map((s) => `<li>${s}</li>`).join('')}</ol>
+    <p class="meta">引用：${refs}</p>
+  </article>`);
+  if (r.guard_issues?.length) {
+    el.insertAdjacentHTML('beforeend', `<p class="hint">校验提示：${r.guard_issues.map((i) => `[${i.code}] ${i.message}`).join('；')}</p>`);
+  }
+}
+
+$('#form-rag').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const question = String(fd.get('question') || '').trim();
+  if (!question) return;
+  const useRag = !!fd.get('use_rag');
+  const btn = e.target.querySelector('button[type="submit"]');
+  const msg = $('#rag-msg');
+  btn.disabled = true;
+  btn.textContent = '思考中…（真实模型约 2~10 秒）';
+  msg.className = 'msg';
+  msg.textContent = '正在调用模型…';
+  try {
+    const res = await api('/api/rag/ask', {
+      method: 'POST',
+      body: JSON.stringify({ question, use_rag: useRag, top_k: 3 }),
+    });
+    renderRagAnswer(res.data);
+    msg.textContent = `生成完成，来源：${res.data.source} · 模型：${res.data.model} · Prompt ${res.data.prompt?.version}`;
+  } catch (err) {
+    msg.className = 'msg error';
+    msg.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '提问';
+  }
+});
+
 $('#btn-generate').addEventListener('click', async () => {
   try {
     await $('#form-pref').requestSubmit?.();

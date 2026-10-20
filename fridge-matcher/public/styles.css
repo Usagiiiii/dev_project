@@ -101,6 +101,40 @@ button.small { padding: 0.3rem 0.55rem; font-size: 0.8rem; }
   padding: 0.5rem 0.7rem;
   font-size: 0.88rem;
 }
+
+/* 实验5：AI 问答（RAG）区块 */
+.rag-qa {
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 0.8rem;
+  background: rgba(239, 244, 239, 0.5);
+  margin-bottom: 0.6rem;
+}
+.rag-qa h3 { margin-top: 0; }
+.rag-input input { width: 100%; }
+.rag-chunks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.6rem 0;
+}
+.chip {
+  background: #eef4ef;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.8rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.chip.ref { background: #eaf1ff; border-color: #bcd0f5; }
+.rag-error { border-color: #e0b3b3; background: #fff7f7; }
+.rag-answer h3 { margin-top: 0.4rem; }
+.rag-answer ol { margin: 0.3rem 0 0.6rem; padding-left: 1.2rem; font-size: 0.9rem; }
+
 .plans { display: grid; gap: 0.8rem; }
 .card {
   border: 1px solid var(--line);

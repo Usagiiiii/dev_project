@@ -292,10 +292,10 @@ RAG 组比直接组多约 472 字符（检索资料），换来可验证的出�
 
 | 入口 | 方式 | 演示内容 |
 | --- | --- | --- |
-| 网页 | `npm start` → `http://localhost:3780` | 页面输入问题 → 显示回答与出处（references） |
+| 网页 | `npm start` → `http://localhost:3780` | "料理方案"面板顶部 **AI 问答（RAG）**：输入问题 → 展示检索片段、模型回答（标题/理由/消耗/补购/步骤/引用）、来源与耗时；下方保留规则方案兜底 |
 | API | `POST /api/rag/ask`（body: `{"question":"...","use_rag":true,"top_k":3}`） | 返回含检索片段、上下文、回答的完整 JSON |
 | CLI | `node scripts/rag-demo.js "问题" [--no-rag]` | 终端展示检索片段、上下文与回答 |
-| 对比测试 | `node scripts/rag-compare.js` | 7 问×2 组统一对比表 + 结果 JSON |
+| 对比测试 | `node scripts/rag-compare.js`（`--v1` 跑原版） | 7 问×2 组统一对比表 + 结果 JSON |
 
 **知识库准备方法**：编辑 `data/knowledge_base.json` 添加条目（id 连续编号、title/source/tags/content 齐全），重启服务生效；也可用 `loadKnowledgeBase()` 校验格式。
 
@@ -316,7 +316,7 @@ RAG 组比直接组多约 472 字符（检索资料），换来可验证的出�
 
 - **图1**（全量测试通过）：在 `fridge-matcher` 目录执行 `node --test tests/api.test.js tests/rag.test.js`，结果 29/29 通过（含模型调用、失败处理、检索、RAG、输出校验用例）。▲图1
 - **图2**（真实 API 调用成功）：在 PowerShell 用 curl 调用千问接口（`POST .../v1/chat/completions`，Authorization: Bearer sk-xxx），返回 HTTP 200 与模型回复文本。▲图2
-- **图3**（页面问答）：`npm start` 启动服务，浏览器打开 `http://localhost:3780`，输入"番茄和鸡蛋能做什么家常菜？"，页面展示回答、所用食材与出处引用。▲图3
+- **图3**（页面 AI 问答）：`npm start` 启动服务，浏览器打开 `http://localhost:3780`，在"料理方案"面板的 **AI 问答（RAG）** 框输入"番茄和鸡蛋能做什么家常菜？"，页面展示检索片段、模型回答（标题/理由/消耗库存/步骤/引用）、来源与耗时。▲图3
 - **图4**（CLI 演示）：执行 `node scripts/rag-demo.js "番茄和鸡蛋能做什么家常菜？"`，终端展示检索 Top-3 片段、上下文与最终回答。▲图4
 - **图5**（V1 对比测试）：执行 `node scripts/rag-compare.js --v1`，控制台输出 7 问×2 组对比表（回答/引用/耗时）。▲图5
 - **图6**（V2 对比测试）：执行 `node scripts/rag-compare.js`（默认 v2），输出 7 问×2 组对比表；可与图5 对照 V1→V2 改进（错误码枚举化、幻觉引用消除、Q5 开放式问题可答）。▲图6

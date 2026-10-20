@@ -46,6 +46,7 @@ npm test
 - RAG 最小链路与输出校验：`src/services/ragService.js` / `ragGuard.js`
 
 ```powershell
+npm start                                           # 页面 http://localhost:3780（"料理方案"面板含 AI 问答 RAG 框）
 npm run rag -- "冰箱里有青菜和鸡蛋，能做什么菜？"   # 命令行 RAG 演示
 npm run rag-compare                                 # 对比测试（默认 V2；--v1 跑原版）
 npm run test:rag                                    # RAG 单元测试

@@ -9,7 +9,7 @@
 <body>
   <header class="top">
     <div>
-      <p class="eyebrow">清库存优先 · 非AI业务闭环</p>
+      <p class="eyebrow">清库存优先 · 规则 + AI 双通道</p>
       <h1>AI冰箱食材寿命匹配器</h1>
     </div>
     <div class="actions">
@@ -59,7 +59,22 @@
 
     <section class="panel" id="panel-plans">
       <h2>料理方案</h2>
-      <p class="hint">实验4实现规则模板方案；AI接入留到后续迭代。</p>
+      <p class="hint">上：AI 问答（RAG，实验5 接入 qwen-plus）；下：规则模板方案（实验4，兜底）。</p>
+
+      <div class="rag-qa">
+        <h3>AI 问答（RAG）</h3>
+        <form id="form-rag" class="form">
+          <label class="rag-input">问题
+            <input name="question" required placeholder="例如：番茄和鸡蛋能做什么家常菜？" />
+          </label>
+          <label class="check"><input name="use_rag" type="checkbox" checked /> 启用检索资料（RAG 组；取消=直接调用模型）</label>
+          <button type="submit">提问</button>
+        </form>
+        <p id="rag-msg" class="msg" aria-live="polite"></p>
+        <div id="rag-result"></div>
+      </div>
+
+      <h3>规则方案（实验4 兜底）</h3>
       <div id="issues" class="issues"></div>
       <div id="plans" class="plans"></div>
       <p id="plan-msg" class="msg" aria-live="polite"></p>
