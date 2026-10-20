@@ -27,10 +27,11 @@ import { log } from '../middleware/logger.js';
  * @param {object} [options.preferences] 覆盖偏好（可选）
  * @param {object} [options.mock] 透传给 callLLM 的 mock 行为配置（mode/reply/ctx）
  * @param {boolean} [options.includeInventory=true] 是否注入库存上下文
+ * @param {'v1'|'v2'} [options.version='v2'] Prompt 版本（V1 原版 / V2 修改版）
  * @returns {Promise<object>} 见下方返回结构说明
  */
 export async function ask(question, options = {}) {
-  const { useRag = true, topK = 3, minScore = 0.1, preferences: prefOverride, mock = {}, includeInventory = true } = options;
+  const { useRag = true, topK = 3, minScore = 0.1, preferences: prefOverride, mock = {}, includeInventory = true, version = 'v2' } = options;
   const startedAt = Date.now();
 
   // 1. 组装上下文：库存（含寿命等级）与偏好
@@ -40,13 +41,13 @@ export async function ask(question, options = {}) {
   // 2. 检索（仅 RAG 组）；无结果或得分过低时 chunks 为空 → 资料不足提示
   const chunks = useRag ? await search(question, { topK, minScore }) : [];
 
-  // 3. 上下文组织（Prompt V1 原版）
-  const { messages, version, context_chars, prompt_tokens_estimate } = buildMessages(useRag ? 'rag' : 'direct', {
+  // 3. 上下文组织（默认 Prompt V2 修改版；可传 version 切换 V1 原版）
+  const { messages, version: promptVersion, context_chars, prompt_tokens_estimate } = buildMessages(useRag ? 'rag' : 'direct', {
     question,
     inventory,
     preferences,
     chunks,
-  });
+  }, version);
   const audit = auditContext({ question, inventory, chunks });
 
   // 4. 模型调用（接口占位：默认 mock；可模拟超时/不可用）
@@ -97,7 +98,7 @@ export async function ask(question, options = {}) {
     answer: guard.ok ? parsed : null,
     guard_issues: guard.issues,
     chunks: useRag ? chunks.map((r) => ({ id: r.chunk.id, title: r.chunk.title, score: r.score, matched: r.matched })) : [],
-    prompt: { version, kind: useRag ? 'rag' : 'direct', context_chars, prompt_tokens_estimate, messages },
+    prompt: { version: promptVersion, kind: useRag ? 'rag' : 'direct', context_chars, prompt_tokens_estimate, messages },
     usage: llm.usage,
     audit,
     elapsed_ms: Date.now() - startedAt,

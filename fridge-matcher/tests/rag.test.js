@@ -81,8 +81,8 @@ test('RET-04 检索：知识库无答案的问题返回空（不强行给结果�
   assert.equal(results.length, 0, '无相关资料时应返回空数组');
 });
 
-test('PROMPT-01 原版 V1：RAG 组含资料编号与来源，直接组不含', () => {
-  assert.equal(PROMPT_VERSION, 'v1');
+test('PROMPT-01 当前版本为 V2（修改版），RAG 组含资料编号与来源，直接组不含', () => {
+  assert.equal(PROMPT_VERSION, 'v2');
   const inventory = [{ name: '青菜', quantity: 1, unit: '把', days_left: 1, life_level: 'critical', status: 'available' }];
   const chunks = [
     { chunk: { id: 'KB-06', title: '青菜蛋花汤的做法', source: '自建整理', content: '青菜洗净切段……' }, score: 0.9, matched: ['青菜', '鸡蛋'] },
@@ -96,6 +96,24 @@ test('PROMPT-01 原版 V1：RAG 组含资料编号与来源，直接组不含', 
   assert.ok(!directUser.includes('[KB-'), '直接组不应包含检索资料');
   assert.ok(buildSystemPrompt().includes('禁止虚构任何库存食材'));
   assert.ok(rag.context_chars > 0 && rag.prompt_tokens_estimate > 0);
+});
+
+test('PROMPT-02 V2 修改点：错误码枚举化、禁止无资料编造引用、开放式问题处理、steps 约束', () => {
+  const v2 = buildSystemPrompt('v2');
+  assert.ok(v2.includes('NO_INVENTORY') && v2.includes('INSUFFICIENT_STOCK') && v2.includes('OUT_OF_SCOPE'), 'V2 应包含枚举错误码');
+  assert.ok(!v2.includes('"error":"CODE"'), 'V2 不应再使用 CODE 占位符');
+  assert.ok(v2.includes('不得在 references 中编造任何 KB 编号'), 'V2 应禁止无资料编造引用');
+  assert.ok(v2.includes('开放式问题'), 'V2 应包含开放式问题处理规则');
+  assert.ok(v2.includes('3 至 5 条'), 'V2 应约束 steps 条数');
+  assert.ok(v2.includes('人数越多，用量相应增加'), 'V2 应约束用量与人数挂钩');
+});
+
+test('PROMPT-03 V1 原版仍可显式使用（version=v1）', () => {
+  const m = buildMessages('rag', { question: 'q', inventory: [], preferences: {}, chunks: [] }, 'v1');
+  assert.equal(m.version, 'v1');
+  assert.ok(m.messages[0].content.includes('{"error":"CODE"'), 'V1 保留 CODE 占位符');
+  const v2 = buildMessages('rag', { question: 'q', inventory: [], preferences: {}, chunks: [] }, 'v2');
+  assert.equal(v2.version, 'v2');
 });
 
 test('LLM-01 占位接口：mock 成功返回与用量估算', async () => {
@@ -145,7 +163,7 @@ test('RAG-01 最小链路：RAG 组带检索片段、回答带引用并通过校
   assert.ok(r.chunks.length >= 1, '应检索到片段');
   assert.ok(r.answer.title && Array.isArray(r.answer.steps));
   assert.ok(r.answer.references.includes('KB-07'), `应引用 KB-07，实际 ${JSON.stringify(r.answer.references)}`);
-  assert.ok(r.prompt.kind === 'rag' && r.prompt.version === 'v1');
+  assert.ok(r.prompt.kind === 'rag' && r.prompt.version === 'v2');
   assert.ok(r.elapsed_ms >= 0);
   assert.ok(r.usage.prompt_tokens_estimate > 0);
 });

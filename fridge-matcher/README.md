@@ -37,17 +37,17 @@ npm run seed
 npm test
 ```
 
-## 实验5：LLM、Context 与 RAG（原版）
+## 实验5：LLM、Context 与 RAG（V1 原版 + V2 修改版，已接入真实 API）
 
-- LLM 接口占位（mock / API 骨架），预计后续以调用 API 方式接入：`src/services/modelClient.js`
-- Prompt 原版 V1 与上下文工程：`src/services/promptTemplates.js`
+- LLM 接口（mock 占位 + 真实 API fetch 调用，千问 qwen-plus）：`src/services/modelClient.js`（配置见 `.env.example`，Key 存 `.env` 不提交）
+- Prompt V1 原版 / V2 修改版与上下文工程：`src/services/promptTemplates.js`（默认 V2，可传 version 切换）
 - 知识库与切分：`data/knowledge_base.json` + `src/services/knowledgeBase.js`
 - 关键词检索（2-gram + BM25）：`src/services/retrieval.js`
 - RAG 最小链路与输出校验：`src/services/ragService.js` / `ragGuard.js`
 
 ```powershell
 npm run rag -- "冰箱里有青菜和鸡蛋，能做什么菜？"   # 命令行 RAG 演示
-npm run rag-compare                                 # 直接组 vs RAG 组对比测试
+npm run rag-compare                                 # 对比测试（默认 V2；--v1 跑原版）
 npm run test:rag                                    # RAG 单元测试
 ```
 

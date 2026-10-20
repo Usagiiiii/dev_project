@@ -46,12 +46,14 @@ function refsOf(result) {
 }
 
 async function main() {
+  const promptVersion = process.argv.includes('--v1') ? 'v1' : 'v2';
   const rows = [];
   for (const q of QUESTIONS) {
-    const direct = await ask(q.question, { useRag: false });
-    const rag = await ask(q.question, { useRag: true, topK: 3 });
+    const direct = await ask(q.question, { useRag: false, version: promptVersion });
+    const rag = await ask(q.question, { useRag: true, topK: 3, version: promptVersion });
     rows.push({
       ...q,
+      prompt_version: promptVersion,
       direct_answer: shortAnswer(direct),
       direct_refs: refsOf(direct),
       direct_ms: direct.elapsed_ms,
@@ -70,7 +72,7 @@ async function main() {
   }
 
   const modelName = getLLMMode() === 'api' ? process.env.LLM_MODEL : 'mock';
-  console.log('\n================ 对比测试结果（LLM 为 ' + modelName + '） ================');
+  console.log('\n================ 对比测试结果（LLM=' + modelName + '，Prompt=' + promptVersion + '） ================');
   console.log('编号 | 类型 | 期望 | 直接组回答 | 直接组引用 | RAG组回答 | RAG组引用 | RAG检索片段 | 直接ms | RAG ms');
   for (const r of rows) {
     console.log(
@@ -78,11 +80,12 @@ async function main() {
     );
   }
   console.log('====================================================================');
-  console.log(`说明：模型为 ${modelName}（${getLLMMode() === 'api' ? '真实 API 调用' : 'mock 占位'}），回答为模型实际输出；`);
+  console.log(`说明：模型为 ${modelName}（${getLLMMode() === 'api' ? '真实 API 调用' : 'mock 占位'}），Prompt 版本 ${promptVersion}；回答为模型实际输出；`);
   console.log(`     人工判断列（正确性/要点遗漏/无依据/引用可靠性）请在实验文档表格中填写。`);
 
-  fs.writeFileSync(OUT_FILE, JSON.stringify({ generated_at: new Date().toISOString(), mode: getLLMMode() === 'api' ? `api:${process.env.LLM_MODEL}` : 'mock', rows }, null, 2), 'utf8');
-  console.log(`\n结构化结果已保存：${OUT_FILE}`);
+  const outFile = promptVersion === 'v1' ? OUT_FILE : OUT_FILE.replace('.json', '-v2.json');
+  fs.writeFileSync(outFile, JSON.stringify({ generated_at: new Date().toISOString(), prompt_version: promptVersion, mode: getLLMMode() === 'api' ? `api:${process.env.LLM_MODEL}` : 'mock', rows }, null, 2), 'utf8');
+  console.log(`\n结构化结果已保存：${outFile}`);
 }
 
 main().catch((err) => {
