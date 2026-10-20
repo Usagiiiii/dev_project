@@ -1,4 +1,10 @@
 ﻿node_modules/
 npm-debug.log
 .env
+.env.*
+!.env.example
 .DS_Store
+fridge-matcher/data/*.db
+fridge-matcher/data/*.db-*
+fridge-matcher/logs/*.log
+*.log
