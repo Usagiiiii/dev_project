@@ -314,7 +314,7 @@ RAG 组比直接组多约 472 字符（检索资料），换来可验证的出�
 
 > 以下为操作步骤与文字说明，截图请按编号插入（截图插入位置：▲图N）。
 
-- **图1**（全量测试通过）：在 `fridge-matcher` 目录执行 `node --test tests/api.test.js tests/rag.test.js`，结果 29/29 通过（含模型调用、失败处理、检索、RAG、输出校验用例）。▲图1
+- **图1**（全量测试通过）：在 `fridge-matcher` 目录执行 `node --test tests/api.test.js tests/rag.test.js`，结果 31/31 通过（含模型调用、失败处理、检索、RAG、输出校验用例）。▲图1
 - **图2**（真实 API 调用成功）：在 PowerShell 用 curl 调用千问接口（`POST .../v1/chat/completions`，Authorization: Bearer sk-xxx），返回 HTTP 200 与模型回复文本。▲图2
 - **图3**（页面 AI 问答）：`npm start` 启动服务，浏览器打开 `http://localhost:3780`，在"料理方案"面板的 **AI 问答（RAG）** 框输入"番茄和鸡蛋能做什么家常菜？"，页面展示检索片段、模型回答（标题/理由/消耗库存/步骤/引用）、来源与耗时。▲图3
 - **图4**（CLI 演示）：执行 `node scripts/rag-demo.js "番茄和鸡蛋能做什么家常菜？"`，终端展示检索 Top-3 片段、上下文与最终回答。▲图4
