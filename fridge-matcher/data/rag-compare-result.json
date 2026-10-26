@@ -1,5 +1,6 @@
 {
-  "generated_at": "2026-10-20T01:16:04.914Z",
+  "generated_at": "2026-10-26T10:00:13.318Z",
+  "prompt_version": "v1",
   "mode": "api:qwen-plus",
   "rows": [
     {
@@ -7,142 +8,151 @@
       "question": "冰箱里只有青菜和鸡蛋，能做什么菜？",
       "type": "单片段可答",
       "expect": "青菜蛋花汤类方案，引用 KB-06",
+      "prompt_version": "v1",
       "direct_answer": "青菜豆腐蛋花汤",
-      "direct_refs": "KB-06",
-      "direct_ms": 7836,
+      "direct_refs": "—",
+      "direct_ms": 6739,
       "direct_issues": [],
       "rag_answer": "青菜蛋花汤",
       "rag_refs": "KB-06",
       "rag_chunks": "KB-06,KB-01,KB-11",
-      "rag_ms": 6529,
+      "rag_ms": 5997,
       "rag_issues": [],
-      "judge_direct_correctness": "基本正确（菜名合理，引用无资料支撑）",
-      "judge_rag_correctness": "正确（引 KB-06）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q2",
       "question": "番茄和鸡蛋能做什么家常菜？",
       "type": "单片段可答",
       "expect": "番茄炒蛋类方案，引用 KB-07",
+      "prompt_version": "v1",
       "direct_answer": "番茄炒蛋",
       "direct_refs": "KB-01",
-      "direct_ms": 7656,
+      "direct_ms": 8097,
       "direct_issues": [],
       "rag_answer": "番茄炒蛋",
       "rag_refs": "KB-07",
       "rag_chunks": "KB-07,KB-11,KB-06",
-      "rag_ms": 7909,
+      "rag_ms": 7210,
       "rag_issues": [],
-      "judge_direct_correctness": "菜名正确，但引用为幻觉（直接组无资料，编号来自 system 示例）",
-      "judge_rag_correctness": "正确（引 KB-07）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q3",
       "question": "豆腐怎么做好吃？",
       "type": "单片段可答",
       "expect": "家常豆腐类方案，引用 KB-08",
-      "direct_answer": "番茄豆腐蒸蛋",
+      "prompt_version": "v1",
+      "direct_answer": "CODE: 问题‘豆腐怎么做好吃？’未指定具体做法类型（如炒、炖、蒸等），也未提供足够约束以唯一确定方案；知识库资料未被提供，无法依据KB作答；且用户允许补购（‘仅使用现有库存：否’），但未说明可购哪些食材，导致无法判断‘好吃’所需的关键增味食材（如葱、蒜、酱油、盐等基础调味料）是否在库存中——而库存清单中未列出任何调味品，故无法生成符合‘清淡’口味且可执行的完整料理方案。",
       "direct_refs": "—",
-      "direct_ms": 8045,
-      "direct_issues": [],
+      "direct_ms": 3516,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
       "rag_answer": "姜香煎豆腐配青菜",
-      "rag_refs": "KB-08,KB-04,KB-11",
+      "rag_refs": "KB-08,KB-11",
       "rag_chunks": "KB-08,KB-04,KB-11",
-      "rag_ms": 7948,
+      "rag_ms": 8678,
       "rag_issues": [],
-      "judge_direct_correctness": "基本正确（无引用）",
-      "judge_rag_correctness": "正确（引 KB-08）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q4",
       "question": "食材有异味、发黏，还能吃吗？",
       "type": "安全类",
       "expect": "提示不可食用，引用 KB-09",
-      "direct_answer": "CODE: 问题超出任务范围：用户询问的是食材安全性判断（异味、发黏是否可食），属于食品安全常识咨询，非基于库存生成料理方案的任务。本助手仅提供匹配冰箱库存的可执行料理方案，不提供食品变质鉴定或健康风险评估服务。",
+      "prompt_version": "v1",
+      "direct_answer": "CODE: 问题超出任务范围：用户询问的是食材安全性判断（异味、发黏是否可食），属于食品安全基础常识范畴，非‘基于库存生成料理方案’任务。本系统不提供食品安全诊断服务，建议立即丢弃出现异味、发黏等腐败迹象的食材。",
       "direct_refs": "—",
-      "direct_ms": 1775,
+      "direct_ms": 1952,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "KB-09: 食材出现异味、发黏属于明确变质特征，依据KB-09和KB-04，该食材不应食用，也不可用于做菜；问题不涉及具体库存组合或方案生成，而是食品安全判断，故不生成料理方案。",
+      "rag_answer": "KB-09: 食材出现异味、发黏属于明确变质特征，依据KB-09和KB-04，该食材不应食用，也不可用于做菜；问题未指明具体是哪一种库存食材发生变质，无法生成安全可行的料理方案。",
       "rag_refs": "—",
       "rag_chunks": "KB-09,KB-10,KB-04",
-      "rag_ms": 1769,
+      "rag_ms": 1871,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝但合理（无资料无法判断）",
-      "judge_rag_correctness": "正确（依据 KB-09 判断不可食用）",
-      "judge_rag_ref_reliable": "可靠（内容引用，未输出 references 数组）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q5",
       "question": "怎样减少冰箱里的食材浪费？",
       "type": "多片段综合",
       "expect": "临期优先+搭配原则，引用 KB-10/11",
-      "direct_answer": "CODE: 问题为开放式建议类提问，非具体料理方案生成任务；本系统仅响应‘用现有库存做什么菜’类指令",
+      "prompt_version": "v1",
+      "direct_answer": "CODE: 用户问题为开放式建议类提问（'怎样减少冰箱里的食材浪费？'），不属于生成具体料理方案的任务范围；本系统仅响应明确要求生成1–3套可执行料理方案的指令。",
       "direct_refs": "—",
-      "direct_ms": 1836,
+      "direct_ms": 1744,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "CODE: 用户问题为通用方法论咨询（‘怎样减少冰箱里的食材浪费？’），未要求生成具体料理方案；而本系统仅响应‘基于库存生成1–3套可执行料理方案’的任务。知识库资料[KB-10][KB-09][KB-12]均属原则性指导，无法直接导出唯一可执行菜谱，且用户未提供‘要做什么菜’或‘想吃哪类食物’等目标指令。因此不符合方案生成触发条件。",
+      "rag_answer": "CODE: 用户问题为通用方法论咨询（怎样减少浪费），而非请求生成具体料理方案；当前任务仅支持基于库存生成1–3套可执行料理方案，不支持泛化建议或知识库解读。请提供明确的‘想做什么菜’或‘用XX食材做一顿饭’类指令。",
       "rag_refs": "—",
       "rag_chunks": "KB-10,KB-09,KB-12",
-      "rag_ms": 2907,
+      "rag_ms": 2405,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝但可接受（无资料）",
-      "judge_rag_correctness": "拒绝但合理（引用检索编号说明原因）",
-      "judge_rag_ref_reliable": "可靠（引用检索编号）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q6",
       "question": "明天天气怎么样，适合吃什么？",
       "type": "资料无答案",
       "expect": "资料不足提示，不编造",
-      "direct_answer": "CODE: 天气信息未提供，且问题超出食材匹配与料理方案生成的任务范围",
+      "prompt_version": "v1",
+      "direct_answer": "CODE: 问题超出任务范围：天气预报不属于食材匹配与料理生成范畴；且未提供天气信息，无法判断‘适合吃什么’的气象依据。本助手仅基于库存、保质期、偏好及知识库提供可执行料理方案。",
       "direct_refs": "—",
-      "direct_ms": 782,
+      "direct_ms": 1763,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "CODE: 天气信息未提供，且问题超出食材匹配与料理生成任务范围",
+      "rag_answer": "CODE: 问题超出任务范围：本系统不提供天气预报服务，且‘适合吃什么’需基于具体天气数据（如温度、湿度、是否降雨）进行营养与体感匹配，当前未提供任何天气信息。",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 805,
+      "rag_ms": 1755,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝正确（不编造天气）",
-      "judge_rag_correctness": "拒绝正确（无检索片段）",
-      "judge_rag_ref_reliable": "N/A（无片段）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q7",
       "question": "教我做佛跳墙的做法",
       "type": "超出范围",
       "expect": "资料不足提示，不编造",
-      "direct_answer": "INSUFFICIENT_STOCK: 佛跳墙传统需海参、鲍鱼、花胶、瑶柱、蹄筋等高档干货及高汤，当前库存中无任何佛跳墙核心食材（如海味、肉类、高汤基底），且补购上限仅2项，无法满足基础配方需求；知识库资料中亦未提供简化版佛跳墙替代方案（KB-01至KB-06均聚焦常规家常菜与保鲜原理，无佛跳墙相关内容）",
+      "prompt_version": "v1",
+      "direct_answer": "INSUFFICIENT_STOCK: 佛跳墙传统需海参、鲍鱼、花胶、瑶柱、蹄筋等高档干货及高汤，当前库存中无任何佛跳墙核心食材（如海产品、肉类、高汤基料），且补购上限仅2项无法覆盖必需原料；知识库资料中亦未提供简化版家庭替代方案。",
       "direct_refs": "—",
-      "direct_ms": 3013,
+      "direct_ms": 2770,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "INSUFFICIENT_STOCK: 佛跳墙传统需海参、鲍鱼、花胶、瑶柱、蹄筋等高价值干货或海鲜，当前库存中无任何佛跳墙核心食材；青菜、豆腐、番茄、鸡蛋、生姜无法替代其主体风味与质地，知识库资料亦未提供简化版佛跳墙用料替换方案。",
+      "rag_answer": "INSUFFICIENT_INVENTORY: 佛跳墙传统需鲍鱼、海参、花胶、瑶柱、鸽蛋、猪蹄筋、鸡肉、火腿等高成本干货与荤料，当前库存仅有青菜、豆腐、番茄、鸡蛋、生姜，完全无法构成佛跳墙基础风味与质地；知识库资料（KB-01 至 KB-06）中亦无素食简化版佛跳墙配方，且用户要求清淡口味与≤20分钟烹饪时间，与佛跳墙需数小时煨炖的本质冲突。",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 2101,
+      "rag_ms": 3111,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝正确（库存不足，不编造）",
-      "judge_rag_correctness": "拒绝正确（无片段）",
-      "judge_rag_ref_reliable": "N/A（无片段）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T09:13:47.310Z",
+  "generated_at": "2026-10-26T10:01:23.368Z",
   "prompt_version": "v2",
   "mode": "api:qwen-plus",
   "rows": [
@@ -11,16 +11,16 @@
       "prompt_version": "v2",
       "direct_answer": "青菜豆腐蛋花汤",
       "direct_refs": "—",
-      "direct_ms": 7680,
+      "direct_ms": 7168,
       "direct_issues": [],
       "rag_answer": "青菜蛋花汤",
-      "rag_refs": "KB-06",
+      "rag_refs": "KB-06,KB-01,KB-11",
       "rag_chunks": "KB-06,KB-01,KB-11",
-      "rag_ms": 7585,
+      "rag_ms": 6752,
       "rag_issues": [],
-      "judge_direct_correctness": "正确（无幻觉引用，规则8生效）",
-      "judge_rag_correctness": "正确（引 KB-06）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q2",
@@ -30,16 +30,16 @@
       "prompt_version": "v2",
       "direct_answer": "番茄炒蛋",
       "direct_refs": "—",
-      "direct_ms": 7453,
+      "direct_ms": 7823,
       "direct_issues": [],
       "rag_answer": "番茄炒蛋",
       "rag_refs": "KB-07,KB-11",
       "rag_chunks": "KB-07,KB-11,KB-06",
-      "rag_ms": 8394,
+      "rag_ms": 8930,
       "rag_issues": [],
-      "judge_direct_correctness": "正确（无幻觉引用，规则8生效）",
-      "judge_rag_correctness": "正确（引 KB-07）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q3",
@@ -47,18 +47,20 @@
       "type": "单片段可答",
       "expect": "家常豆腐类方案，引用 KB-08",
       "prompt_version": "v2",
-      "direct_answer": "番茄豆腐蒸蛋",
+      "direct_answer": "OUT_OF_SCOPE: 问题‘豆腐怎么做好吃’为开放式烹饪咨询，未指定具体做法类型（如炒、煮、蒸）或约束条件（如仅用库存），且未提供知识库资料支撑具体做法推荐；当前库存虽含豆腐，但用户允许补购，需明确目标菜式才能匹配方案。",
       "direct_refs": "—",
-      "direct_ms": 6965,
-      "direct_issues": [],
+      "direct_ms": 2342,
+      "direct_issues": [
+        "MODEL_UNCERTAIN"
+      ],
       "rag_answer": "姜香煎豆腐配青菜",
       "rag_refs": "KB-08,KB-11",
       "rag_chunks": "KB-08,KB-04,KB-11",
-      "rag_ms": 10259,
+      "rag_ms": 8096,
       "rag_issues": [],
-      "judge_direct_correctness": "基本正确（无引用）",
-      "judge_rag_correctness": "正确（引 KB-08）",
-      "judge_rag_ref_reliable": "可靠"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q4",
@@ -66,22 +68,22 @@
       "type": "安全类",
       "expect": "提示不可食用，引用 KB-09",
       "prompt_version": "v2",
-      "direct_answer": "OUT_OF_SCOPE: 该问题属于食品安全判断范畴，涉及感官异常（异味、发黏）的食材风险评估，超出了本助手基于库存与知识库生成料理方案的任务范围；且当前未提供相关知识库资料支持此类判断。建议立即丢弃出现异味、发黏等腐败迹象的食材，不可食用。",
+      "direct_answer": "OUT_OF_SCOPE: 问题涉及食品安全判断（异味、发黏属于变质征兆），超出本助手基于库存与知识库生成料理方案的任务范围；建议立即丢弃该食材，不可食用。",
       "direct_refs": "—",
-      "direct_ms": 1989,
+      "direct_ms": 1523,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "OUT_OF_SCOPE: 问题‘食材有异味、发黏，还能吃吗？’属于食品安全判断类咨询，非料理方案生成任务；根据KB-09和KB-04，该状态明确提示变质，不可食用，无需搭配菜品。本助手仅提供基于安全食材的可执行料理方案，不提供独立食品安全诊断服务。",
+      "rag_answer": "OUT_OF_SCOPE: 问题‘食材有异味、发黏，还能吃吗？’属于食品安全判断类开放式咨询，不涉及具体库存组合与菜谱生成；根据KB-09明确指出‘出现异味、发黏等情况时，说明可能已变质，不应继续食用’，该结论为确定性安全警示，无需匹配库存或生成料理方案；因此超出本助手‘生成可执行料理方案’的任务范围。",
       "rag_refs": "—",
       "rag_chunks": "KB-09,KB-10,KB-04",
-      "rag_ms": 2347,
+      "rag_ms": 2795,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "正确（提示不可食用；错误码用 OUT_OF_SCOPE 可商榷）",
-      "judge_rag_correctness": "正确（依据 KB-09 判断变质不可食）",
-      "judge_rag_ref_reliable": "可靠（内容引用，未输出 references 数组）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q5",
@@ -89,20 +91,18 @@
       "type": "多片段综合",
       "expect": "临期优先+搭配原则，引用 KB-10/11",
       "prompt_version": "v2",
-      "direct_answer": "used_items 为空，方案未消耗任何库存食材",
-      "direct_refs": "—",
-      "direct_ms": 8466,
-      "direct_issues": [
-        "INVALID_FORMAT"
-      ],
+      "direct_answer": "临期食材优先消耗策略",
+      "direct_refs": "KB-03",
+      "direct_ms": 6761,
+      "direct_issues": [],
       "rag_answer": "临期食材优先消耗法",
       "rag_refs": "KB-10",
       "rag_chunks": "KB-10,KB-09,KB-12",
-      "rag_ms": 6643,
+      "rag_ms": 9624,
       "rag_issues": [],
-      "judge_direct_correctness": "有建议但格式未达标（used_items 为空被拦截）",
-      "judge_rag_correctness": "正确（开放式问题给出原则性建议，规则9生效）",
-      "judge_rag_ref_reliable": "可靠（引 KB-10）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q6",
@@ -112,20 +112,20 @@
       "prompt_version": "v2",
       "direct_answer": "OUT_OF_SCOPE: 问题涉及天气预报，超出本助手能力范围；且‘适合吃什么’需结合天气信息判断，当前无天气数据支持。",
       "direct_refs": "—",
-      "direct_ms": 1151,
+      "direct_ms": 1219,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "OUT_OF_SCOPE: 问题涉及天气预报，超出本助手能力范围；且‘适合吃什么’需结合天气信息判断，当前无天气数据支持。",
+      "rag_answer": "OUT_OF_SCOPE: 问题涉及天气预报（外部信息），超出本助手能力范围；且‘适合吃什么’需结合天气数据判断，但用户未提供天气信息，知识库中亦无相关资料支撑。",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 1183,
+      "rag_ms": 2117,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝正确（OUT_OF_SCOPE 不编造）",
-      "judge_rag_correctness": "拒绝正确（无检索片段）",
-      "judge_rag_ref_reliable": "N/A（无片段）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     },
     {
       "id": "Q7",
@@ -133,22 +133,22 @@
       "type": "超出范围",
       "expect": "资料不足提示，不编造",
       "prompt_version": "v2",
-      "direct_answer": "OUT_OF_SCOPE: 佛跳墙是传统高端闽菜，需鲍鱼、海参、花胶、瑶柱、鸽蛋、猪蹄筋等十余种名贵食材及长时间煨炖（通常4小时以上），与用户库存严重不符，且远超20分钟烹饪限制和清淡口味偏好；知识库未提供简化版方案，无法合规生成可行料理方案。",
+      "direct_answer": "INSUFFICIENT_STOCK: 佛跳墙为传统闽菜，核心食材包括鲍鱼、海参、花胶、瑶柱、鸽蛋、猪蹄筋、火腿等，当前库存中无任何佛跳墙必需主料，仅有的青菜、豆腐、番茄、鸡蛋、生姜无法构成该菜品基础；补购2项亦远不足以覆盖关键缺失食材。",
       "direct_refs": "—",
-      "direct_ms": 2348,
+      "direct_ms": 2452,
       "direct_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "rag_answer": "OUT_OF_SCOPE: 佛跳墙为传统闽菜，需鲍鱼、海参、花胶、瑶柱、鸽蛋、猪蹄筋等十余种高成本、长时煨炖食材，当前库存中无任何核心原料（如海鲜类、肉类、干货类），且用户设定最长烹饪时间仅20分钟，远低于佛跳墙所需数小时煨制时间；知识库未提供简化版或替代方案资料，无法在约束条件下生成合规方案。",
+      "rag_answer": "OUT_OF_SCOPE: 佛跳墙为传统闽菜，需鲍鱼、海参、花胶、瑶柱、鸽蛋、猪蹄筋等十余种高成本、长时炖煮食材，当前库存完全不匹配；且20分钟内无法完成正宗做法。知识库中亦无简化版佛跳墙方案（KB资料未覆盖该菜品）。",
       "rag_refs": "—",
       "rag_chunks": "",
-      "rag_ms": 2939,
+      "rag_ms": 2253,
       "rag_issues": [
         "MODEL_UNCERTAIN"
       ],
-      "judge_direct_correctness": "拒绝正确（OUT_OF_SCOPE，分类比 V1 更准确）",
-      "judge_rag_correctness": "拒绝正确（无片段）",
-      "judge_rag_ref_reliable": "N/A（无片段）"
+      "judge_direct_correctness": "",
+      "judge_rag_correctness": "",
+      "judge_rag_ref_reliable": ""
     }
   ]
 }
