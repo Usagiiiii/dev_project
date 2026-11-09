@@ -1,0 +1,34 @@
+{
+  "task_id": "T1793666805437-bzd8",
+  "task": "用临期食材做菜",
+  "status": "parse_failed",
+  "success": false,
+  "success_issues": [],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 3,
+  "elapsed_ms": 13,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "parse_error",
+      "error_code": "INVALID_JSON",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "parse_error",
+      "error_code": "INVALID_JSON",
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "kind": "parse_error",
+      "error_code": "INVALID_JSON",
+      "latency_ms": 0
+    }
+  ],
+  "final": null
+}

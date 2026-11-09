@@ -1,0 +1,80 @@
+{
+  "task_id": "T1794232135433-coe4",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "failed",
+  "success": false,
+  "success_issues": [
+    {
+      "code": "FORBIDDEN_INGREDIENT",
+      "message": "「鸡蛋」状态为 expired，禁止使用"
+    }
+  ],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 4,
+  "elapsed_ms": 8268,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"番茄\",\"鸡蛋\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 4
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "番茄×2个、鸡蛋×2枚"
+      },
+      "ok": true,
+      "result": "已消耗 番茄、鸡蛋",
+      "latency_ms": 5
+    },
+    {
+      "step": 4,
+      "kind": "final",
+      "latency_ms": 4494
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "优先消耗 life_level=critical 的番茄（剩余0天）和 expired 的鸡蛋（剩余-2天），符合临期优先原则；口味清淡、用时约15分钟，满足用户偏好与时间限制；不含花生，规避过敏风险。",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 2,
+        "unit": "枚"
+      }
+    ],
+    "steps": [
+      "番茄洗净切滚刀块，鸡蛋打入碗中加少许盐搅匀备用",
+      "热锅凉油，倒入蛋液中火炒至凝固盛出",
+      "锅中再加少许油，下番茄块中火翻炒至出沙出汁",
+      "倒入炒好的鸡蛋，轻翻拌匀，加少量盐调味即可出锅"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

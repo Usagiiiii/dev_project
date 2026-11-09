@@ -1,0 +1,91 @@
+{
+  "task_id": "T1793665728480-qadp",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 5,
+  "elapsed_ms": 9684,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"all\"}",
+      "ok": false,
+      "error_code": "INVALID_ARGS",
+      "message": "参数校验失败：参数 \"status\" 取值必须为 available / needs_confirm / expired / consumed / discarded，实际为 \"all\"",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"available\"}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"豆腐\",\"鸡蛋\",\"番茄\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 2
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "豆腐×1盒、鸡蛋×2枚、番茄×2个"
+      },
+      "ok": true,
+      "result": "已消耗 豆腐、鸡蛋、番茄",
+      "latency_ms": 17
+    },
+    {
+      "step": 5,
+      "kind": "final",
+      "latency_ms": 5818
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "优先消耗临期食材：豆腐（warn，3天）、鸡蛋（warn，4天）、番茄（ok，6天）；符合清淡口味、1人份、20分钟内完成；不含花生；做法简单易执行。",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "豆腐",
+        "quantity": 1,
+        "unit": "盒"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 2,
+        "unit": "枚"
+      },
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      }
+    ],
+    "steps": [
+      "1. 番茄洗净切滚刀块，豆腐切小方块，鸡蛋打入碗中加少许盐搅匀备用；",
+      "2. 热锅少油，倒入蛋液炒至凝固盛出；",
+      "3. 锅中补少许油，下番茄块中火翻炒至出沙出汁（约2分钟）；",
+      "4. 加入豆腐块轻翻均匀，再倒入炒好的鸡蛋，撒少许盐和白胡椒粉调味；",
+      "5. 翻炒1分钟至整体热透即可出锅。"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "task_id": "T1794232298114-vwo2",
+  "task": "用临期食材做菜",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 3,
+  "elapsed_ms": 32,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":\"番茄\"}",
+      "ok": false,
+      "error_code": "INVALID_ARGS",
+      "message": "参数校验失败：参数 \"ingredients\" 类型应为 array，实际为 string",
+      "latency_ms": 1
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"番茄\",\"鸡蛋\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "kind": "final",
+      "latency_ms": 0
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "依据库存与菜谱资料",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 3,
+        "unit": "枚"
+      }
+    ],
+    "steps": [
+      "番茄切块",
+      "鸡蛋打散炒熟",
+      "合炒调味"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

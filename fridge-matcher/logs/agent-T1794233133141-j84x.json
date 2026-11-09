@@ -1,0 +1,23 @@
+{
+  "task_id": "T1794233133141-j84x",
+  "task": "用临期食材做菜",
+  "status": "llm_failed",
+  "success": false,
+  "success_issues": [],
+  "model": null,
+  "mode": null,
+  "total_steps": 1,
+  "elapsed_ms": 2,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "llm_error",
+      "error_code": "LLM_UNKNOWN",
+      "message": "LLM_TIMEOUT: 模型调用超时（模拟）",
+      "latency_ms": 1
+    }
+  ],
+  "final": null
+}

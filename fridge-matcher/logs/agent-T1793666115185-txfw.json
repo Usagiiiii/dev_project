@@ -1,0 +1,98 @@
+{
+  "task_id": "T1793666115185-txfw",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 6,
+  "elapsed_ms": 12027,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"豆腐\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 3
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"青菜\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 2
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"青菜\",\"生姜\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 2
+    },
+    {
+      "step": 5,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "鸡蛋×2枚、青菜×1把、生姜×0.1块"
+      },
+      "ok": true,
+      "result": "已消耗 鸡蛋、青菜、生姜",
+      "latency_ms": 20
+    },
+    {
+      "step": 6,
+      "kind": "final",
+      "latency_ms": 5959
+    }
+  ],
+  "final": {
+    "title": "青菜蛋花汤",
+    "reason": "优先消耗临期食材：青菜（剩余6天，ok但建议早用）、鸡蛋（剩余4天，warn级需优先处理）；符合清淡口味、1人份、≤20分钟要求；不含花生及花生制品；生姜仅作提味，用量少且库存充足。",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "鸡蛋",
+        "quantity": 2,
+        "unit": "枚"
+      },
+      {
+        "name": "青菜",
+        "quantity": 1,
+        "unit": "把"
+      },
+      {
+        "name": "生姜",
+        "quantity": 0.1,
+        "unit": "块"
+      }
+    ],
+    "steps": [
+      "1. 青菜洗净切段；生姜去皮切细末（约0.1块）",
+      "2. 锅中加水约500ml，大火烧开后下青菜段，煮1分钟至断生",
+      "3. 鸡蛋打散成蛋液；水再次沸腾后转中火，缓缓淋入蛋液，用筷子轻搅形成蛋花",
+      "4. 加盐调味（约1/4茶匙），撒入姜末，再煮30秒即可关火"
+    ],
+    "references": [
+      "KB-06"
+    ]
+  }
+}

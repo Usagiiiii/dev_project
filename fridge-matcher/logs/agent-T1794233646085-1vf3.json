@@ -1,0 +1,78 @@
+{
+  "task_id": "T1794233646085-1vf3",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "note": "user_rejected_consumption",
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 4,
+  "elapsed_ms": 10884,
+  "maxSteps": 8,
+  "consumptionAccepted": false,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"青菜\",\"番茄\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 2
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "鸡蛋×2枚、青菜×1把"
+      },
+      "ok": false,
+      "error_code": "USER_REJECTED",
+      "message": "用户拒绝了「mark_consumed」的执行：将记录以下食材消耗并扣减库存：鸡蛋 × 2枚、青菜 × 1把，本次操作未执行，库存未被修改",
+      "latency_ms": 2704
+    },
+    {
+      "step": 4,
+      "kind": "final",
+      "latency_ms": 5294
+    }
+  ],
+  "final": {
+    "title": "青菜蛋花汤",
+    "reason": "优先消耗临期食材：青菜 life_level=ok（剩余6天），鸡蛋 life_level=warn（剩余4天，属临期需优先使用）；符合清淡口味、1人份、≤20分钟要求；且避开花生过敏源；用户虽拒绝记录消耗，但方案仍可执行",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "鸡蛋",
+        "quantity": 2,
+        "unit": "枚"
+      },
+      {
+        "name": "青菜",
+        "quantity": 1,
+        "unit": "把"
+      }
+    ],
+    "steps": [
+      "1. 青菜洗净切段备用；",
+      "2. 锅中加水约400ml，大火烧开；",
+      "3. 水沸后放入青菜，煮1分钟至变软；",
+      "4. 鸡蛋打散成蛋液，缓缓淋入锅中，用筷子轻搅形成蛋花；",
+      "5. 加盐调味，关火盛出即可。"
+    ],
+    "references": [
+      "KB-06"
+    ]
+  }
+}

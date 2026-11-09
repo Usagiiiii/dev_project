@@ -1,0 +1,77 @@
+{
+  "task_id": "T1793665995340-v0qs",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "failed",
+  "success": false,
+  "success_issues": [
+    {
+      "code": "MODEL_DECLINED",
+      "message": "模型声明无法完成：system_error 记录食材消耗时系统异常，无法完成扣减操作。建议稍后重试或手动记录。当前方案仍可执行：番茄炒蛋（清淡版），用掉2枚鸡蛋和2个番茄，15分钟内完成。"
+    }
+  ],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 6,
+  "elapsed_ms": 6276,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"豆腐\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 3
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"青菜\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 1
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"番茄\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 1
+    },
+    {
+      "step": 5,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "鸡蛋×2枚、番茄×2个"
+      },
+      "ok": false,
+      "error_code": "ERR_USE_AFTER_CLOSE",
+      "message": "readline was closed",
+      "latency_ms": 1
+    },
+    {
+      "step": 6,
+      "kind": "final",
+      "latency_ms": 1738
+    }
+  ],
+  "final": {
+    "error": "system_error",
+    "message": "记录食材消耗时系统异常，无法完成扣减操作。建议稍后重试或手动记录。当前方案仍可执行：番茄炒蛋（清淡版），用掉2枚鸡蛋和2个番茄，15分钟内完成。"
+  }
+}

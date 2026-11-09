@@ -1,0 +1,88 @@
+{
+  "task_id": "T1793667173588-9xz2",
+  "task": "用临期食材做菜",
+  "status": "max_steps_reached",
+  "success": false,
+  "success_issues": [],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 8,
+  "elapsed_ms": 159,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 5,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 1
+    }
+  ],
+  "final": null
+}

@@ -1,0 +1,57 @@
+{
+  "task_id": "T1794233382549-03ls",
+  "task": "用临期食材做菜",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 2,
+  "elapsed_ms": 40,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "深海龙虾×1只"
+      },
+      "ok": false,
+      "error_code": "ITEM_NOT_FOUND",
+      "message": "库存中不存在可消耗的食材「深海龙虾」（单位 只），请先用 query_inventory 核对名称与单位",
+      "latency_ms": 1
+    },
+    {
+      "step": 2,
+      "kind": "final",
+      "latency_ms": 1
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "依据库存与菜谱资料",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 3,
+        "unit": "枚"
+      }
+    ],
+    "steps": [
+      "番茄切块",
+      "鸡蛋打散炒熟",
+      "合炒调味"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

@@ -6,12 +6,17 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const dataDir = path.join(root, 'data');
-const dbPath = process.env.FRIDGE_DB_PATH || path.join(dataDir, 'fridge.db');
 
 let db;
 
+/** 惰性解析库文件路径：每次调用读取当前 FRIDGE_DB_PATH，支持测试进程在加载模块后设置独立测试库 */
+function resolveDbPath() {
+  return process.env.FRIDGE_DB_PATH || path.join(dataDir, 'fridge.db');
+}
+
 export function getDb() {
   if (db) return db;
+  const dbPath = resolveDbPath();
   fs.mkdirSync(path.dirname(dbPath), { recursive: true });
   db = new DatabaseSync(dbPath);
   db.exec('PRAGMA foreign_keys = ON;');
@@ -20,7 +25,7 @@ export function getDb() {
 }
 
 export function getDbPath() {
-  return dbPath;
+  return resolveDbPath();
 }
 
 function initSchema(database) {

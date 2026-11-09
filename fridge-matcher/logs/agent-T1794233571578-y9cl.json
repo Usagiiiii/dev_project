@@ -1,0 +1,85 @@
+{
+  "task_id": "T1794233571578-y9cl",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 5,
+  "elapsed_ms": 17398,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"鸡蛋\",\"豆腐\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 5
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"豆腐\",\"生姜\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 2
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "豆腐×1盒、生姜×0.5块"
+      },
+      "ok": true,
+      "result": "已消耗 豆腐、生姜",
+      "latency_ms": 7823
+    },
+    {
+      "step": 5,
+      "kind": "final",
+      "latency_ms": 5915
+    }
+  ],
+  "final": {
+    "title": "家常豆腐",
+    "reason": "优先消耗 life_level=warn 的临期豆腐（剩余4天）与生姜（虽为ok但可协同使用），符合清淡口味、1人份、≤20分钟要求；规避花生及所有 needs_confirm/expired 食材",
+    "cooking_minutes": 20,
+    "used_items": [
+      {
+        "name": "豆腐",
+        "quantity": 1,
+        "unit": "盒"
+      },
+      {
+        "name": "生姜",
+        "quantity": 0.5,
+        "unit": "块"
+      }
+    ],
+    "steps": [
+      "1. 豆腐切约2cm见方小块，沸水加少许盐焯烫1分钟去豆腥，捞出沥干；",
+      "2. 生姜切薄片；热锅放少量油，中火下姜片煸香至边缘微卷；",
+      "3. 轻轻放入豆腐块，不翻动，煎约2分钟至底面微黄定型；",
+      "4. 小心翻面，再煎2分钟；加入半碗清水、少许生抽和微量盐，小火焖3分钟；",
+      "5. 开盖收汁至浓稠，关火装盘。"
+    ],
+    "references": [
+      "KB-08"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "task_id": "T1793665632707-pyr2",
+  "task": "用临期食材做菜并记录消耗",
+  "status": "failed",
+  "success": false,
+  "success_issues": [
+    {
+      "code": "FORBIDDEN_INGREDIENT",
+      "message": "「番茄」状态为 expired，禁止使用"
+    },
+    {
+      "code": "FORBIDDEN_INGREDIENT",
+      "message": "「鸡蛋」状态为 expired，禁止使用"
+    },
+    {
+      "code": "CONSUMPTION_MISMATCH",
+      "message": "用户已同意记录消耗，但库存消耗记录与 used_items 不一致"
+    }
+  ],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 3,
+  "elapsed_ms": 81,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "番茄×2个"
+      },
+      "ok": true,
+      "result": "已消耗 番茄",
+      "latency_ms": 21
+    },
+    {
+      "step": 3,
+      "kind": "final",
+      "latency_ms": 0
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "依据库存与菜谱资料",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 3,
+        "unit": "枚"
+      }
+    ],
+    "steps": [
+      "番茄切块",
+      "鸡蛋打散炒熟",
+      "合炒调味"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

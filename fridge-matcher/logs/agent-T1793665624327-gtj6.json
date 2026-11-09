@@ -1,0 +1,85 @@
+{
+  "task_id": "T1793665624327-gtj6",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "failed",
+  "success": false,
+  "success_issues": [
+    {
+      "code": "MODEL_DECLINED",
+      "message": "模型声明无法完成：no_valid_ingredients 冰箱中无 life_level 为 'ok' 或 'warn' 的可用食材；所有 available 状态食材均为 expired，needs_confirm 状态食材不可用，且用户忌口花生（花生酱虽 ok 但不可用）；无法生成符合要求的料理方案。"
+    }
+  ],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 7,
+  "elapsed_ms": 6905,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"all\"}",
+      "ok": false,
+      "error_code": "INVALID_ARGS",
+      "message": "参数校验失败：参数 \"status\" 取值必须为 available / needs_confirm / expired / consumed / discarded，实际为 \"all\"",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"available\"}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"warn\"}",
+      "ok": false,
+      "error_code": "INVALID_ARGS",
+      "message": "参数校验失败：参数 \"status\" 取值必须为 available / needs_confirm / expired / consumed / discarded，实际为 \"warn\"",
+      "latency_ms": 1
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"available\"}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 1
+    },
+    {
+      "step": 5,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"needs_confirm\"}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{\"status\":\"expired\"}",
+      "ok": true,
+      "result": "库存 7 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "kind": "final",
+      "latency_ms": 1982
+    }
+  ],
+  "final": {
+    "error": "no_valid_ingredients",
+    "message": "冰箱中无 life_level 为 'ok' 或 'warn' 的可用食材；所有 available 状态食材均为 expired，needs_confirm 状态食材不可用，且用户忌口花生（花生酱虽 ok 但不可用）；无法生成符合要求的料理方案。"
+  }
+}

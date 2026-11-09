@@ -10,8 +10,11 @@
     "reset-db": "node scripts/reset-db.js",
     "test": "node --test tests/api.test.js",
     "test:rag": "node --test tests/rag.test.js",
+    "test:agent": "node --test tests/agent.test.js",
     "rag": "node scripts/rag-demo.js",
-    "rag-compare": "node scripts/rag-compare.js"
+    "rag-compare": "node scripts/rag-compare.js",
+    "agent": "node scripts/agent-demo.js",
+    "tool-demo": "node scripts/tool-demo.js"
   },
   "engines": {
     "node": ">=22.5.0"

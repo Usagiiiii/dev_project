@@ -1,0 +1,81 @@
+{
+  "task_id": "T1793666598378-k6o4",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "qwen-plus",
+  "mode": "api",
+  "total_steps": 4,
+  "elapsed_ms": 10296,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "search_recipe",
+      "args": "{\"ingredients\":[\"豆腐\",\"鸡蛋\",\"番茄\"],\"top_k\":3}",
+      "ok": true,
+      "result": "检索到 3 条",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "豆腐×1盒、鸡蛋×2枚、番茄×2个"
+      },
+      "ok": true,
+      "result": "已消耗 豆腐、鸡蛋、番茄",
+      "latency_ms": 20
+    },
+    {
+      "step": 4,
+      "kind": "final",
+      "latency_ms": 6653
+    }
+  ],
+  "final": {
+    "title": "番茄炒蛋",
+    "reason": "优先消耗 life_level=warn 的豆腐（剩余3天）和鸡蛋（剩余4天），搭配库存中 ok 状态的番茄（剩余6天），符合清淡口味、1人份、20分钟内完成的要求；避开花生及所有花生制品（如花生酱），且未使用 expired（洋葱）、needs_confirm（生菜）等不可用食材。",
+    "cooking_minutes": 15,
+    "used_items": [
+      {
+        "name": "豆腐",
+        "quantity": 1,
+        "unit": "盒"
+      },
+      {
+        "name": "鸡蛋",
+        "quantity": 2,
+        "unit": "枚"
+      },
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      }
+    ],
+    "steps": [
+      "1. 番茄洗净切滚刀块，豆腐切小方块，鸡蛋打入碗中加少许盐搅匀；",
+      "2. 热锅少油，倒入蛋液中火炒至凝固成块，盛出备用；",
+      "3. 锅中补少许油，下番茄块中火翻炒至出沙出汁（约2分钟）；",
+      "4. 加入豆腐块轻翻拌匀，再倒入炒好的鸡蛋，轻轻翻炒使汁水裹匀；",
+      "5. 尝味后仅加少量盐或不加（因豆腐与鸡蛋已有基础咸鲜），装盘即可。"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

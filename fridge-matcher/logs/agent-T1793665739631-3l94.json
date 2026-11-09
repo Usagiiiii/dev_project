@@ -1,0 +1,59 @@
+{
+  "task_id": "T1793665739631-3l94",
+  "task": "用临期食材做菜并记录消耗",
+  "status": "completed",
+  "success": true,
+  "success_issues": [],
+  "model": "test-override",
+  "mode": "test",
+  "total_steps": 3,
+  "elapsed_ms": 93,
+  "maxSteps": 8,
+  "consumptionAccepted": true,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "query_inventory",
+      "args": "{}",
+      "ok": true,
+      "result": "库存 8 项",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "mark_consumed",
+      "args": {
+        "items": "番茄×2个"
+      },
+      "ok": true,
+      "result": "已消耗 番茄",
+      "latency_ms": 24
+    },
+    {
+      "step": 3,
+      "kind": "final",
+      "latency_ms": 0
+    }
+  ],
+  "final": {
+    "title": "凉拌番茄",
+    "reason": "依据库存与菜谱资料",
+    "cooking_minutes": 10,
+    "used_items": [
+      {
+        "name": "番茄",
+        "quantity": 2,
+        "unit": "个"
+      }
+    ],
+    "steps": [
+      "番茄切块",
+      "调味装盘"
+    ],
+    "references": [
+      "KB-07"
+    ]
+  }
+}

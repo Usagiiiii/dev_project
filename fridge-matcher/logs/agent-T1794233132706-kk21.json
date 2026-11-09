@@ -1,0 +1,23 @@
+{
+  "task_id": "T1794233132706-kk21",
+  "task": "用冰箱里的临期食材做今晚的菜，并记录消耗",
+  "status": "llm_failed",
+  "success": false,
+  "success_issues": [],
+  "model": null,
+  "mode": null,
+  "total_steps": 1,
+  "elapsed_ms": 73,
+  "maxSteps": 8,
+  "consumptionAccepted": null,
+  "steps": [
+    {
+      "step": 1,
+      "kind": "llm_error",
+      "error_code": "LLM_NETWORK_ERROR",
+      "message": "网络请求失败：fetch failed",
+      "latency_ms": 71
+    }
+  ],
+  "final": null
+}
