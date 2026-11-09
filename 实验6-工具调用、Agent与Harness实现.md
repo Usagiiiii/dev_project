@@ -293,13 +293,13 @@
 - **本实验新增/修改文件**：
   - 新增 `src/services/tools.js`（工具注册表与 Schema 校验）、`src/services/agent.js`（Agent 决策核心）、`src/services/harness.js`（运行时 Harness）、`tests/agent.test.js`（16 用例）、`scripts/agent-demo.js`（CLI 演示）、`scripts/tool-demo.js`（工具层演示，对应图2）；
   - 修改 `data/sample-seed.json`（样例库存改为相对日期动态生成：`expiry_days_from_now` / `purchase_days_ago`）、`scripts/seed.js`（支持相对日期换算）、`tests/agent.test.js`（测试库存改为 `daysFromNow(n)` 动态生成）、`src/db.js`（测试库路径惰性解析）、`package.json`（新增 `test:agent` / `agent` 脚本）、`实验6-工具调用、Agent与Harness实现.md`（本报告）。
-- **提交方式**：本机当前未检测到 git 可执行文件（仓库 `.git` 仅有初始化骨架），请在已配置 git 的环境执行以下命令后，将 commit 号回填此处：
+- **提交方式**：在项目根目录执行以下命令（`.env` 与 `data/*.db` 已被 `.gitignore` 忽略，`logs/agent-*.json` 作为图6 的运行证据一并提交）：
 
   ```
   cd D:\dev_project\p1\dev_project
   git add -A
   git commit -m "实验6：工具调用、Agent与Harness实现（含测试与报告）"
-  git log --oneline -1
+  git push origin main
   ```
 
-- **Commit**：`（提交后回填）`
+- **Commit**：`ddc4e09`（分支 main，2026-11-09）
